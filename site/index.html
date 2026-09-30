@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Comparateur météo</title>
+<style>
+  :root {
+    --fond: #f6f7f9; --carte: #ffffff; --texte: #16202b; --discret: #5d6b7a;
+    --trait: #dde2e8; --accent: #0b6bcb; --barre: #d9e8f8; --alerte: #8a5a00; --fond-alerte: #fff4d6;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --fond: #11161c; --carte: #1a222c; --texte: #e8edf2; --discret: #9aa7b5;
+      --trait: #2c3744; --accent: #6db3f7; --barre: #24405e; --alerte: #f3cf7a; --fond-alerte: #3a2f12;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--fond); color: var(--texte);
+    font: 16px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  }
+  main { max-width: 860px; margin: 0 auto; padding: 32px 16px 48px; }
+  h1 { font-size: 1.6rem; margin: 0 0 4px; }
+  .sous-titre { color: var(--discret); margin: 0 0 24px; }
+  .recherche { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 20px; }
+  input, select {
+    font: inherit; color: inherit; background: var(--carte);
+    border: 1px solid var(--trait); border-radius: 8px; padding: 10px 12px;
+  }
+  input { flex: 1 1 260px; }
+  input:focus, select:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+  .carte { background: var(--carte); border: 1px solid var(--trait); border-radius: 12px; padding: 20px; }
+  .gagnant { font-size: 1.15rem; margin: 0 0 4px; }
+  .gagnant strong { color: var(--accent); }
+  .contexte { color: var(--discret); font-size: 0.9rem; margin: 0 0 16px; }
+  .alerte {
+    background: var(--fond-alerte); color: var(--alerte);
+    border-radius: 8px; padding: 8px 12px; font-size: 0.9rem; margin: 0 0 16px;
+  }
+  .defile { overflow-x: auto; }
+  table { border-collapse: collapse; width: 100%; font-variant-numeric: tabular-nums; }
+  th, td { padding: 8px 10px; text-align: right; white-space: nowrap; border-top: 1px solid var(--trait); }
+  th { font-size: 0.8rem; font-weight: 600; color: var(--discret); border-top: 0; }
+  th:nth-child(2), td:nth-child(2) { text-align: left; white-space: normal; }
+  td small { display: block; color: var(--discret); font-size: 0.78rem; }
+  .jauge { position: relative; min-width: 110px; text-align: left; }
+  .jauge span { position: relative; font-weight: 600; }
+  .jauge i { position: absolute; left: 6px; top: 6px; bottom: 6px; background: var(--barre); border-radius: 4px; }
+  details { margin-top: 24px; color: var(--discret); font-size: 0.9rem; }
+  summary { cursor: pointer; color: var(--texte); }
+  a { color: var(--accent); }
+</style>
+</head>
+<body>
+<main>
+  <h1>Quel service météo est le plus fiable chez vous ?</h1>
+  <p class="sous-titre">Chaque jour, les prévisions de chaque service sont enregistrées puis comparées aux relevés des stations Météo-France.</p>
+
+  <div class="recherche">
+    <input id="ville" list="villes" placeholder="Cherchez une ville (ex. Lyon)" autocomplete="off" aria-label="Ville">
+    <datalist id="villes"></datalist>
+    <select id="echeance" aria-label="Échéance">
+      <option value="1">Pour le lendemain (J+1)</option>
+      <option value="1,2,3" selected>À 1–3 jours</option>
+      <option value="4,5,6,7">À 4–7 jours</option>
+      <option value="1,2,3,4,5,6,7">Toutes échéances</option>
+    </select>
+  </div>
+
+  <section class="carte" id="resultat" aria-live="polite">Chargement…</section>
+
+  <details>
+    <summary>Comment lire ce classement</summary>
+    <p><strong>Précision</strong> : moyenne de trois taux de réussite — température maximale à ±2 °C du relevé, température minimale à ±2 °C, et bon pronostic pluie / pas de pluie (seuil de 1 mm).</p>
+    <p><strong>Erreur Tmax</strong> : écart moyen sur la température maximale. <strong>Biais</strong> : positif si le service prévoit trop chaud, négatif s'il prévoit trop froid.</p>
+    <p>Les lignes « via Open-Meteo » mesurent le modèle de prévision brut de l'organisme, pas son application grand public, qui applique ses propres corrections. La station de référence peut être à plusieurs kilomètres de la ville ; sa distance est indiquée.</p>
+  </details>
+</main>
+
+<script>
+const $ = (id) => document.getElementById(id);
+let donnees = null;
+
+function normaliser(texte) {
+  return texte.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().trim();
+}
+
+function element(balise, texte, classe) {
+  const e = document.createElement(balise);
+  if (texte !== undefined) e.textContent = texte;
+  if (classe) e.className = classe;
+  return e;
+}
+
+function libelle(ville) {
+  return ville.dep ? `${ville.nom} (${ville.dep})` : ville.nom;
+}
+
+function trouverVille(saisie) {
+  const cherche = normaliser(saisie);
+  if (!cherche) return donnees.villes[0];
+  return donnees.villes.find((v) => normaliser(libelle(v)) === cherche)
+      || donnees.villes.find((v) => normaliser(v.nom) === cherche)
+      || donnees.villes.find((v) => normaliser(v.nom).startsWith(cherche));
+}
+
+// Additionne les sommes des échéances choisies puis en tire les indicateurs.
+function indicateurs(parEcheance, echeances) {
+  const total = {};
+  donnees.colonnes.forEach((c) => (total[c] = 0));
+  for (const e of echeances) {
+    const sommes = parEcheance[e];
+    if (sommes) donnees.colonnes.forEach((c, i) => (total[c] += sommes[i]));
+  }
+  if (!total.n_tmax) return null;
+  const taux = [];
+  if (total.n_tmax) taux.push(total.ok_tmax / total.n_tmax);
+  if (total.n_tmin) taux.push(total.ok_tmin / total.n_tmin);
+  if (total.n_pluie) taux.push(total.ok_pluie / total.n_pluie);
+  return {
+    n: total.n_tmax,
+    precision: taux.reduce((a, b) => a + b, 0) / taux.length,
+    tmax: total.ok_tmax / total.n_tmax,
+    tmin: total.n_tmin ? total.ok_tmin / total.n_tmin : null,
+    pluie: total.n_pluie ? total.ok_pluie / total.n_pluie : null,
+    erreur: total.abs_tmax / total.n_tmax,
+    biais: total.err_tmax / total.n_tmax,
+  };
+}
+
+const pourcent = (x) => (x === null ? "—" : Math.round(x * 100) + " %");
+const degres = (x, signe) => (signe && x > 0 ? "+" : "") + x.toFixed(1).replace(".", ",") + " °C";
+
+function afficher() {
+  const zone = $("resultat");
+  zone.replaceChildren();
+  const ville = trouverVille($("ville").value);
+  if (!ville) {
+    zone.append(element("p", "Cette ville n'est pas suivie. Choisissez-en une dans la liste proposée."));
+    return;
+  }
+  const echeances = $("echeance").value.split(",");
+  const scores = donnees.scores[ville.code] || {};
+  const lignes = Object.keys(scores)
+    .map((source) => ({ source, ...indicateurs(scores[source], echeances) }))
+    .filter((l) => l.n)
+    .sort((a, b) => b.precision - a.precision || a.erreur - b.erreur);
+
+  if (!lignes.length) {
+    zone.append(element("p", donnees.jours
+      ? "Pas encore de prévision vérifiée pour cette ville à cette échéance."
+      : "La collecte vient de commencer : les premiers scores apparaîtront dans quelques jours, le temps que les relevés des stations soient publiés."));
+    return;
+  }
+
+  const premier = donnees.sources[lignes[0].source];
+  const titre = element("p", "", "gagnant");
+  titre.append("Le plus fiable pour " + ville.nom + " : ", element("strong", premier.nom),
+               " (" + pourcent(lignes[0].precision) + ")");
+  zone.append(titre);
+
+  const jours = Math.max(...lignes.map((l) => l.n));
+  let contexte = `Période du ${donnees.premier_jour} au ${donnees.dernier_jour}.`;
+  if (ville.station) contexte += ` Station de référence : ${ville.station}, à ${String(ville.dist_km).replace(".", ",")} km.`;
+  zone.append(element("p", contexte, "contexte"));
+  if (ville.code !== "FR" && jours < 30) {
+    zone.append(element("p", `Seulement ${jours} prévisions vérifiées : le classement peut encore beaucoup changer. Il devient fiable à partir d'un mois environ.`, "alerte"));
+  }
+
+  const table = element("table");
+  const entete = element("tr");
+  ["", "Service", "Précision", "Tmax ±2 °C", "Tmin ±2 °C", "Pluie", "Erreur Tmax", "Biais", "Vérifiées"]
+    .forEach((t) => entete.append(element("th", t)));
+  table.append(entete);
+  lignes.forEach((l, rang) => {
+    const tr = element("tr");
+    const source = donnees.sources[l.source];
+    const nom = element("td", source.nom);
+    nom.append(element("small", source.detail));
+    const jauge = element("td", "", "jauge");
+    const barre = element("i");
+    barre.style.width = `calc(${Math.round(l.precision * 100)}% - 12px)`;
+    jauge.append(barre, element("span", pourcent(l.precision)));
+    tr.append(element("td", String(rang + 1)), nom, jauge,
+      element("td", pourcent(l.tmax)), element("td", pourcent(l.tmin)), element("td", pourcent(l.pluie)),
+      element("td", degres(l.erreur)), element("td", degres(l.biais, true)), element("td", String(l.n)));
+    table.append(tr);
+  });
+  const defile = element("div", "", "defile");
+  defile.append(table);
+  zone.append(defile);
+}
+
+fetch("data/scores.json", { cache: "no-cache" })
+  .then((r) => r.json())
+  .then((json) => {
+    donnees = json;
+    const liste = $("villes");
+    donnees.villes.slice(1)
+      .sort((a, b) => a.nom.localeCompare(b.nom, "fr"))
+      .forEach((v) => { const o = element("option"); o.value = libelle(v); liste.append(o); });
+    $("ville").addEventListener("input", afficher);
+    $("echeance").addEventListener("change", afficher);
+    afficher();
+  })
+  .catch(() => { $("resultat").textContent = "Impossible de charger les scores."; });
+</script>
+</body>
+</html>
