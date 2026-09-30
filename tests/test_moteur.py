@@ -7,15 +7,14 @@ from moteur.collecte import avec_echeance
 
 
 def prevision(**champs):
-    base = {"ville": "69123", "source": "ecmwf", "date": "2026-10-02", "echeance": 1,
+    base = {"station": "69029001", "source": "ecmwf", "date": "2026-10-02", "echeance": 1,
             "tmin": "10", "tmax": "20", "pluie": "0", "proba": "", "vent": "15"}
     base.update(champs)
     return base
 
 
 def observation(**champs):
-    base = {"ville": "69123", "date": "2026-10-02", "station": "69029001",
-            "nom_station": "LYON-BRON", "dist_km": "7.5",
+    base = {"station": "69029001", "date": "2026-10-02",
             "tmin": "10", "tmax": "20", "pluie": "0", "vent": "15"}
     base.update(champs)
     return base
@@ -50,21 +49,24 @@ class TestScores(unittest.TestCase):
         self.assertEqual(valeur(ligne, "n_pluie"), 0)
         self.assertEqual(valeur(ligne, "n_tmax"), 1)
 
-    def test_calcul_par_ville_et_france(self):
+    def test_calcul_par_station_et_france(self):
         previsions = [prevision(), prevision(date="2026-10-03", tmax="30"),
                       prevision(date="2026-10-09")]  # pas de relevé : ignorée
         releves = [observation(), observation(date="2026-10-03")]
-        resultat = scores.calculer(previsions, releves)
-        sommes = resultat["69123"]["ecmwf"]["1"]
+        resultat, jours = scores.calculer(previsions, releves)
+        sommes = resultat["69029001"]["ecmwf"]["1"]
         self.assertEqual(valeur(sommes, "n_tmax"), 2)
         self.assertEqual(valeur(sommes, "ok_tmax"), 1)
-        self.assertEqual(resultat["FR"], resultat["69123"])
+        self.assertEqual(resultat["FR"], resultat["69029001"])
+        self.assertEqual(jours, ["2026-10-02", "2026-10-03"])
 
     def test_construire(self):
-        villes = [{"code": "69123", "nom": "Lyon", "dep": "69"}]
-        resultat = scores.construire(villes, [prevision()], [observation()])
-        self.assertEqual(resultat["jours"], 1)
-        self.assertEqual(resultat["villes"][1]["station"], "LYON-BRON")
+        stations = [{"code": "69029001", "nom": "LYON-BRON"},
+                    {"code": "20004002", "nom": "AJACCIO"}]
+        resume, departements = scores.construire(stations, [prevision()], [observation()])
+        self.assertEqual((resume["jours"], resume["stations"]), (1, 2))
+        self.assertEqual(resume["france"], departements["69"]["69029001"]["scores"])
+        self.assertEqual(departements["20"]["20004002"], {"nom": "AJACCIO", "scores": {}})
 
 
 class TestCollecte(unittest.TestCase):
@@ -165,24 +167,31 @@ class TestObservations(unittest.TestCase):
         "69029001;LYON-BRON;45.7265;4.9369;197;20260901;0.0;12.0;25.0;4.0\n"
     )
 
-    def test_lecture_et_station_la_plus_proche(self):
+    def test_lecture(self):
         releves = observations.lire_releves(self.TEXTE, "20260925")
-        self.assertEqual(list(releves), ["2026-10-02"])  # relevé ancien écarté
-        self.assertEqual(len(releves["2026-10-02"]), 2)  # station sans température écartée
-        lyon = {"code": "69123", "lat": 45.758, "lon": 4.8351}
-        proche = observations.plus_proche(lyon, releves["2026-10-02"])
-        self.assertEqual(proche["nom_station"], "LYON-BRON")
-        self.assertAlmostEqual(proche["vent"], 18.0)  # 5 m/s en km/h
-        self.assertTrue(7 < proche["dist_km"] < 10)
+        # Relevé ancien et station sans température écartés.
+        self.assertEqual([r["station"] for r in releves], ["69029001", "69299001"])
+        self.assertEqual(releves[0]["date"], "2026-10-02")
+        self.assertAlmostEqual(releves[0]["vent"], 18.0)  # 5 m/s en km/h
+        self.assertIsNone(releves[1]["vent"])
 
-    def test_aucune_station_a_moins_de_30_km(self):
-        brest = {"code": "29019", "lat": 48.39, "lon": -4.49}
+    def test_rattachement_et_ordre_des_stations(self):
         releves = observations.lire_releves(self.TEXTE, "20260925")
-        self.assertIsNone(observations.plus_proche(brest, releves["2026-10-02"]))
-
-    def test_corse(self):
-        self.assertEqual(observations.departement_meteo("2A"), "20")
-        self.assertEqual(observations.departement_meteo("69"), "69")
+        communes = [
+            {"code": "69123", "nom": "Lyon", "lat": "45.7580", "lon": "4.8351",
+             "population": "519127"},
+            {"code": "69299", "nom": "Colombier-Saugnieu", "lat": "45.7170", "lon": "5.1030",
+             "population": "2700"},
+            {"code": "29019", "nom": "Brest", "lat": "48.3900", "lon": "-4.4900",
+             "population": "140000"},
+        ]
+        stations, rattachements = observations.stations_en_service(releves, communes)
+        self.assertEqual(rattachements["69123"][0], "69029001")
+        self.assertTrue(7 < rattachements["69123"][1] < 10)
+        self.assertEqual(rattachements["69299"][0], "69299001")
+        self.assertNotIn("29019", rattachements)  # aucune station à moins de 30 km
+        # La station de la plus grande ville passe en premier.
+        self.assertEqual([s["ville"] for s in stations], ["Lyon", "Colombier-Saugnieu"])
 
 
 if __name__ == "__main__":

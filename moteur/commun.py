@@ -11,10 +11,11 @@ from datetime import datetime
 from zoneinfo import ZoneInfo
 
 RACINE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-VILLES = os.path.join(RACINE, "villes.json")
+COMMUNES = os.path.join(RACINE, "communes.csv")
+STATIONS = os.path.join(RACINE, "data", "stations.json")
 PREVISIONS = os.path.join(RACINE, "data", "previsions")
-OBSERVATIONS = os.path.join(RACINE, "data", "observations.csv")
-SCORES = os.path.join(RACINE, "site", "data", "scores.json")
+OBSERVATIONS = os.path.join(RACINE, "data", "observations")
+SITE = os.path.join(RACINE, "site", "data")
 
 PARIS = ZoneInfo("Europe/Paris")
 # MET Norway exige un User-Agent identifiable ; les autres services l'acceptent.
@@ -22,12 +23,11 @@ USER_AGENT = os.environ.get(
     "METEO_USER_AGENT", "comparateur-meteo/1.0 (https://github.com/)"
 )
 
+COLONNES_COMMUNES = ["code", "nom", "lat", "lon", "population"]
 COLONNES_PREVISIONS = [
-    "ville", "source", "date", "echeance", "tmin", "tmax", "pluie", "proba", "vent",
+    "station", "source", "date", "echeance", "tmin", "tmax", "pluie", "proba", "vent",
 ]
-COLONNES_OBSERVATIONS = [
-    "ville", "date", "station", "nom_station", "dist_km", "tmin", "tmax", "pluie", "vent",
-]
+COLONNES_OBSERVATIONS = ["station", "date", "tmin", "tmax", "pluie", "vent"]
 
 
 def aujourdhui():
@@ -60,9 +60,16 @@ def telecharger_json(url, **options):
     return json.loads(telecharger(url, **options).decode("utf-8"))
 
 
-def charger_villes():
-    with open(VILLES, encoding="utf-8") as fichier:
+def charger_stations():
+    """Stations suivies : les points où l'on collecte les prévisions."""
+    with open(STATIONS, encoding="utf-8") as fichier:
         return json.load(fichier)
+
+
+def ecrire_json(chemin, contenu, **options):
+    os.makedirs(os.path.dirname(chemin), exist_ok=True)
+    with open(chemin, "w", encoding="utf-8") as fichier:
+        json.dump(contenu, fichier, ensure_ascii=False, **options)
 
 
 def nombre(valeur):

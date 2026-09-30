@@ -1,13 +1,13 @@
 """Collecte quotidienne : enregistre ce que chaque service prévoit pour J+1 à J+7.
 
-python3 -m moteur.collecte [--villes N]
+python3 -m moteur.collecte [--stations N]
 """
 import os
 import sys
 from datetime import date
 
 from .commun import (
-    COLONNES_PREVISIONS, PREVISIONS, aujourdhui, charger_villes, ecrire_csv, lire_csv,
+    COLONNES_PREVISIONS, PREVISIONS, aujourdhui, charger_stations, ecrire_csv, lire_csv,
 )
 from .sources import COLLECTEURS
 
@@ -24,7 +24,7 @@ def avec_echeance(previsions, jour):
     return gardees
 
 
-def collecter(villes, jour):
+def collecter(stations, jour):
     chemin = os.path.join(PREVISIONS, "%s.csv.gz" % jour.isoformat())
     # Si la collecte est relancée le même jour, on garde les sources déjà
     # obtenues quand une source échoue cette fois-ci.
@@ -37,7 +37,7 @@ def collecter(villes, jour):
             print("%-16s ignoré (pas de clé %s)" % (collecteur.__name__, variable))
             continue
         try:
-            previsions = avec_echeance(collecteur(villes), jour)
+            previsions = avec_echeance(collecteur(stations), jour)
         except Exception as erreur:  # une source en panne ne bloque pas les autres
             echecs.append(collecteur.__name__)
             print("%-16s ÉCHEC : %s" % (collecteur.__name__, erreur))
@@ -52,7 +52,7 @@ def collecter(villes, jour):
 
 
 if __name__ == "__main__":
-    villes = charger_villes()
-    if "--villes" in sys.argv:
-        villes = villes[:int(sys.argv[sys.argv.index("--villes") + 1])]
-    collecter(villes, aujourdhui())
+    stations = charger_stations()
+    if "--stations" in sys.argv:
+        stations = stations[:int(sys.argv[sys.argv.index("--stations") + 1])]
+    collecter(stations, aujourdhui())

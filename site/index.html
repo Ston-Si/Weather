@@ -58,7 +58,7 @@
   <p class="sous-titre">Chaque jour, les prévisions de chaque service sont enregistrées puis comparées aux relevés des stations Météo-France.</p>
 
   <div class="recherche">
-    <input id="ville" list="villes" placeholder="Cherchez une ville (ex. Lyon)" autocomplete="off" aria-label="Ville">
+    <input id="ville" list="villes" placeholder="Cherchez une commune (ex. Lyon)" autocomplete="off" aria-label="Commune">
     <datalist id="villes"></datalist>
     <select id="echeance" aria-label="Échéance">
       <option value="1">Pour le lendemain (J+1)</option>
@@ -74,16 +74,21 @@
     <summary>Comment lire ce classement</summary>
     <p><strong>Précision</strong> : moyenne de trois taux de réussite — température maximale à ±2 °C du relevé, température minimale à ±2 °C, et bon pronostic pluie / pas de pluie (seuil de 1 mm).</p>
     <p><strong>Erreur Tmax</strong> : écart moyen sur la température maximale. <strong>Biais</strong> : positif si le service prévoit trop chaud, négatif s'il prévoit trop froid.</p>
-    <p>Les lignes « via Open-Meteo » mesurent le modèle de prévision brut de l'organisme, pas son application grand public, qui applique ses propres corrections. La station de référence peut être à plusieurs kilomètres de la ville ; sa distance est indiquée.</p>
+    <p>Les lignes « via Open-Meteo » mesurent le modèle de prévision brut de l'organisme, pas son application grand public, qui applique ses propres corrections. </p>
+    <p>Chaque commune est rattachée à la station Météo-France la plus proche (30 km au plus) : les prévisions sont demandées pour l'emplacement de cette station, puis comparées à ses relevés. Deux communes voisines rattachées à la même station ont donc le même classement. La distance est indiquée ; en montagne ou sur la côte, le temps peut différer sensiblement entre la commune et sa station.</p>
   </details>
 </main>
 
 <script>
 const $ = (id) => document.getElementById(id);
-let donnees = null;
+let resume = null;
+let communes = [];                 // [code, nom, station, km, nom et libellé normalisés], les plus peuplées d'abord
+const departements = new Map();    // fichiers de scores déjà demandés, par département
+let demande = 0;
 
 function normaliser(texte) {
-  return texte.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().trim();
+  return texte.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase()
+    .replace(/[-'’]/g, " ").replace(/\s+/g, " ").trim();
 }
 
 function element(balise, texte, classe) {
@@ -93,25 +98,46 @@ function element(balise, texte, classe) {
   return e;
 }
 
-function libelle(ville) {
-  return ville.dep ? `${ville.nom} (${ville.dep})` : ville.nom;
+const libelle = (commune) => `${commune[1]} (${commune[0].slice(0, 2)})`;
+
+function trouverCommune(cherche) {
+  return communes.find((c) => c[5] === cherche)
+      || communes.find((c) => c[4] === cherche)
+      || communes.find((c) => c[4].startsWith(cherche));
 }
 
-function trouverVille(saisie) {
-  const cherche = normaliser(saisie);
-  if (!cherche) return donnees.villes[0];
-  return donnees.villes.find((v) => normaliser(libelle(v)) === cherche)
-      || donnees.villes.find((v) => normaliser(v.nom) === cherche)
-      || donnees.villes.find((v) => normaliser(v.nom).startsWith(cherche));
+function suggerer(cherche) {
+  const liste = $("villes");
+  liste.replaceChildren();
+  if (cherche.length < 2) return;
+  let restant = 8;
+  for (const commune of communes) {
+    if (!commune[4].startsWith(cherche)) continue;
+    const option = element("option");
+    option.value = libelle(commune);
+    liste.append(option);
+    if (--restant === 0) break;
+  }
+}
+
+// Les deux premiers chiffres d'une station sont son département.
+function scoresDeLaStation(station) {
+  const departement = station.slice(0, 2);
+  if (!departements.has(departement)) {
+    departements.set(departement, fetch(`data/scores/${departement}.json`, { cache: "no-cache" })
+      .then((r) => (r.ok ? r.json() : {}))
+      .catch(() => ({})));
+  }
+  return departements.get(departement).then((stations) => stations[station] || {});
 }
 
 // Additionne les sommes des échéances choisies puis en tire les indicateurs.
 function indicateurs(parEcheance, echeances) {
   const total = {};
-  donnees.colonnes.forEach((c) => (total[c] = 0));
+  resume.colonnes.forEach((c) => (total[c] = 0));
   for (const e of echeances) {
     const sommes = parEcheance[e];
-    if (sommes) donnees.colonnes.forEach((c, i) => (total[c] += sommes[i]));
+    if (sommes) resume.colonnes.forEach((c, i) => (total[c] += sommes[i]));
   }
   if (!total.n_tmax) return null;
   const taux = [];
@@ -132,39 +158,51 @@ function indicateurs(parEcheance, echeances) {
 const pourcent = (x) => (x === null ? "—" : Math.round(x * 100) + " %");
 const degres = (x, signe) => (signe && x > 0 ? "+" : "") + x.toFixed(1).replace(".", ",") + " °C";
 
-function afficher() {
+async function afficher() {
+  const numero = ++demande;
   const zone = $("resultat");
-  zone.replaceChildren();
-  const ville = trouverVille($("ville").value);
-  if (!ville) {
-    zone.append(element("p", "Cette ville n'est pas suivie. Choisissez-en une dans la liste proposée."));
-    return;
+  const cherche = normaliser($("ville").value);
+  suggerer(cherche);
+  let lieu = { nom: `la France entière (${resume.stations} stations)`, scores: resume.france };
+  if (cherche) {
+    const commune = trouverCommune(cherche);
+    if (!commune) {
+      zone.replaceChildren(element("p", "Commune introuvable. Choisissez-en une dans la liste proposée."));
+      return;
+    }
+    if (!commune[2]) {
+      zone.replaceChildren(element("p", `Aucune station Météo-France à moins de 30 km de ${commune[1]} : pas de relevé pour vérifier les prévisions.`));
+      return;
+    }
+    const station = await scoresDeLaStation(commune[2]);
+    if (numero !== demande) return;  // une saisie plus récente a pris le relais
+    lieu = { nom: commune[1], station: station.nom, km: commune[3], scores: station.scores || {} };
   }
+  zone.replaceChildren();
   const echeances = $("echeance").value.split(",");
-  const scores = donnees.scores[ville.code] || {};
-  const lignes = Object.keys(scores)
-    .map((source) => ({ source, ...indicateurs(scores[source], echeances) }))
+  const lignes = Object.keys(lieu.scores)
+    .map((source) => ({ source, ...indicateurs(lieu.scores[source], echeances) }))
     .filter((l) => l.n)
     .sort((a, b) => b.precision - a.precision || a.erreur - b.erreur);
 
   if (!lignes.length) {
-    zone.append(element("p", donnees.jours
-      ? "Pas encore de prévision vérifiée pour cette ville à cette échéance."
+    zone.append(element("p", resume.jours
+      ? `Pas encore de prévision vérifiée pour ${lieu.nom} à cette échéance.`
       : "La collecte vient de commencer : les premiers scores apparaîtront dans quelques jours, le temps que les relevés des stations soient publiés."));
     return;
   }
 
-  const premier = donnees.sources[lignes[0].source];
+  const premier = resume.sources[lignes[0].source];
   const titre = element("p", "", "gagnant");
-  titre.append("Le plus fiable pour " + ville.nom + " : ", element("strong", premier.nom),
+  titre.append("Le plus fiable pour " + lieu.nom + " : ", element("strong", premier.nom),
                " (" + pourcent(lignes[0].precision) + ")");
   zone.append(titre);
 
   const jours = Math.max(...lignes.map((l) => l.n));
-  let contexte = `Période du ${donnees.premier_jour} au ${donnees.dernier_jour}.`;
-  if (ville.station) contexte += ` Station de référence : ${ville.station}, à ${String(ville.dist_km).replace(".", ",")} km.`;
+  let contexte = `Période du ${resume.premier_jour} au ${resume.dernier_jour}.`;
+  if (lieu.station) contexte += ` Station de référence : ${lieu.station}, à ${String(lieu.km).replace(".", ",")} km.`;
   zone.append(element("p", contexte, "contexte"));
-  if (ville.code !== "FR" && jours < 30) {
+  if (lieu.station && jours < 30) {
     zone.append(element("p", `Seulement ${jours} prévisions vérifiées : le classement peut encore beaucoup changer. Il devient fiable à partir d'un mois environ.`, "alerte"));
   }
 
@@ -175,7 +213,7 @@ function afficher() {
   table.append(entete);
   lignes.forEach((l, rang) => {
     const tr = element("tr");
-    const source = donnees.sources[l.source];
+    const source = resume.sources[l.source];
     const nom = element("td", source.nom);
     nom.append(element("small", source.detail));
     const jauge = element("td", "", "jauge");
@@ -192,14 +230,12 @@ function afficher() {
   zone.append(defile);
 }
 
-fetch("data/scores.json", { cache: "no-cache" })
-  .then((r) => r.json())
-  .then((json) => {
-    donnees = json;
-    const liste = $("villes");
-    donnees.villes.slice(1)
-      .sort((a, b) => a.nom.localeCompare(b.nom, "fr"))
-      .forEach((v) => { const o = element("option"); o.value = libelle(v); liste.append(o); });
+Promise.all(["data/scores.json", "data/communes.json"].map(
+  (url) => fetch(url, { cache: "no-cache" }).then((r) => r.json())))
+  .then(([scores, liste]) => {
+    resume = scores;
+    communes = liste;
+    communes.forEach((c) => { c[4] = normaliser(c[1]); c[5] = normaliser(libelle(c)); });
     $("ville").addEventListener("input", afficher);
     $("echeance").addEventListener("change", afficher);
     afficher();

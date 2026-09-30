@@ -1,6 +1,7 @@
 """Un service météo = une fonction qui rend des prévisions quotidiennes normalisées.
 
-Chaque prévision est un dict : ville, source, date (AAAA-MM-JJ, jour local),
+Les prévisions sont demandées à l'emplacement de chaque station Météo-France.
+Chaque prévision est un dict : station, source, date (AAAA-MM-JJ, jour local),
 tmin/tmax (°C), pluie (mm), proba (% de pluie, ou None), vent (km/h, vent moyen
 maximal). Les fonctions `lire_*` sont pures (testées sans réseau).
 """
@@ -29,18 +30,19 @@ SOURCES = {
     "icon": {"nom": "DWD ICON", "detail": "modèle allemand, via Open-Meteo"},
     "ukmo": {"nom": "UK Met Office", "detail": "modèle britannique, via Open-Meteo"},
     "yr": {"nom": "yr.no", "detail": "prévisions de MET Norway"},
-    "openweathermap": {"nom": "OpenWeatherMap", "detail": "offre gratuite, jusqu'à 5 jours"},
-    "weatherapi": {"nom": "WeatherAPI", "detail": "offre gratuite, jusqu'à 3 jours"},
+    "openweathermap": {"nom": "OpenWeatherMap", "detail": "offre gratuite, jusqu'à 4 jours"},
+    "weatherapi": {"nom": "WeatherAPI", "detail": "offre gratuite, jusqu'à 2 jours"},
     "accuweather": {"nom": "AccuWeather",
-                    "detail": "offre gratuite : 20 plus grandes villes, jusqu'à 5 jours"},
+                    "detail": "offre gratuite : 20 grandes villes seulement, jusqu'à 4 jours"},
     "tomorrow": {"nom": "Tomorrow.io",
-                 "detail": "offre gratuite : 20 plus grandes villes, jusqu'à 4 jours"},
+                 "detail": "offre gratuite : 20 grandes villes seulement, jusqu'à 4 jours"},
 }
 
 # Les offres gratuites d'AccuWeather (50 appels par jour) et de Tomorrow.io
-# (25 par heure) ne couvrent pas toutes les villes : on suit les plus peuplées,
-# en gardant de la marge pour relancer une collecte.
-VILLES_OFFRE_LIMITEE = 20
+# (25 par heure) ne couvrent pas toutes les stations : on suit celles des plus
+# grandes villes (les premières de la liste), en gardant de la marge pour
+# relancer une collecte.
+STATIONS_OFFRE_LIMITEE = 20
 LIEUX_ACCUWEATHER = os.path.join(RACINE, "data", "accuweather_lieux.json")
 
 
@@ -50,7 +52,7 @@ def _jour_local(instant):
 
 # --- Open-Meteo -------------------------------------------------------------
 
-def lire_open_meteo(reponse, ville):
+def lire_open_meteo(reponse, station):
     quotidien = reponse.get("daily") or {}
     previsions = []
     for source, modele in MODELES_OPEN_METEO.items():
@@ -65,7 +67,7 @@ def lire_open_meteo(reponse, ville):
             if tmax is None or tmin is None:
                 continue
             previsions.append({
-                "ville": ville, "source": source, "date": date,
+                "station": station, "source": source, "date": date,
                 "tmin": tmin, "tmax": tmax,
                 "pluie": valeur("precipitation_sum"),
                 "proba": valeur("precipitation_probability_max"),
@@ -74,10 +76,10 @@ def lire_open_meteo(reponse, ville):
     return previsions
 
 
-def open_meteo(villes, lot=40):
+def open_meteo(stations, lot=30):
     previsions = []
-    for debut in range(0, len(villes), lot):
-        groupe = villes[debut:debut + lot]
+    for debut in range(0, len(stations), lot):
+        groupe = stations[debut:debut + lot]
         url = (
             "https://api.open-meteo.com/v1/forecast"
             "?latitude=%s&longitude=%s"
@@ -89,18 +91,20 @@ def open_meteo(villes, lot=40):
             ",".join(str(v["lon"]) for v in groupe),
             ",".join(MODELES_OPEN_METEO.values()),
         )
-        reponses = telecharger_json(url)
-        if isinstance(reponses, dict):  # une seule ville : pas de liste
+        reponses = telecharger_json(url, essais=4, pause=30)
+        if isinstance(reponses, dict):  # une seule station : pas de liste
             reponses = [reponses]
-        for ville, reponse in zip(groupe, reponses):
-            previsions.extend(lire_open_meteo(reponse, ville["code"]))
-        time.sleep(1)
+        for station, reponse in zip(groupe, reponses):
+            previsions.extend(lire_open_meteo(reponse, station["code"]))
+        # Offre gratuite : 600 appels par minute, et une station compte pour
+        # plusieurs appels quand on demande cinq modèles à la fois.
+        time.sleep(10 if len(stations) > lot else 0)
     return previsions
 
 
 # --- yr.no (MET Norway) -----------------------------------------------------
 
-def lire_yr(reponse, ville):
+def lire_yr(reponse, station):
     """Agrège la série horaire puis 6-horaire de MET Norway par jour local."""
     serie = reponse["properties"]["timeseries"]
     instants = [
@@ -131,26 +135,26 @@ def lire_yr(reponse, ville):
         if jour["heures"] < 21:  # jour incomplet (aujourd'hui, fin de série)
             continue
         previsions.append({
-            "ville": ville, "source": "yr", "date": date,
+            "station": station, "source": "yr", "date": date,
             "tmin": min(jour["t"]), "tmax": max(jour["t"]),
             "pluie": jour["pluie"], "proba": None, "vent": max(jour["vent"]),
         })
     return previsions
 
 
-def yr(villes):
+def yr(stations):
     previsions = []
-    for ville in villes:
+    for station in stations:
         url = "https://api.met.no/weatherapi/locationforecast/2.0/complete?lat=%s&lon=%s" % (
-            ville["lat"], ville["lon"])
-        previsions.extend(lire_yr(telecharger_json(url), ville["code"]))
+            station["lat"], station["lon"])
+        previsions.extend(lire_yr(telecharger_json(url), station["code"]))
         time.sleep(0.1)
     return previsions
 
 
 # --- OpenWeatherMap (prévision gratuite 5 jours / 3 heures) ------------------
 
-def lire_openweathermap(reponse, ville):
+def lire_openweathermap(reponse, station):
     jours = defaultdict(lambda: {"tmin": [], "tmax": [], "pluie": 0.0, "proba": [], "vent": []})
     for point in reponse.get("list") or []:
         instant = datetime.fromtimestamp(point["dt"], tz=timezone.utc)
@@ -166,32 +170,32 @@ def lire_openweathermap(reponse, ville):
         if len(jour["tmax"]) < 8:  # 8 pas de 3 h = un jour complet
             continue
         previsions.append({
-            "ville": ville, "source": "openweathermap", "date": date,
+            "station": station, "source": "openweathermap", "date": date,
             "tmin": min(jour["tmin"]), "tmax": max(jour["tmax"]),
             "pluie": jour["pluie"], "proba": max(jour["proba"]), "vent": max(jour["vent"]),
         })
     return previsions
 
 
-def openweathermap(villes):
+def openweathermap(stations):
     cle = os.environ["OWM_KEY"]
     previsions = []
-    for ville in villes:
+    for station in stations:
         url = ("https://api.openweathermap.org/data/2.5/forecast"
-               "?lat=%s&lon=%s&units=metric&appid=%s") % (ville["lat"], ville["lon"], cle)
-        previsions.extend(lire_openweathermap(telecharger_json(url), ville["code"]))
+               "?lat=%s&lon=%s&units=metric&appid=%s") % (station["lat"], station["lon"], cle)
+        previsions.extend(lire_openweathermap(telecharger_json(url), station["code"]))
         time.sleep(1.1)  # offre gratuite : 60 appels par minute
     return previsions
 
 
 # --- WeatherAPI (offre gratuite : 3 jours) ----------------------------------
 
-def lire_weatherapi(reponse, ville):
+def lire_weatherapi(reponse, station):
     previsions = []
     for jour in reponse.get("forecast", {}).get("forecastday") or []:
         resume = jour["day"]
         previsions.append({
-            "ville": ville, "source": "weatherapi", "date": jour["date"],
+            "station": station, "source": "weatherapi", "date": jour["date"],
             "tmin": resume["mintemp_c"], "tmax": resume["maxtemp_c"],
             "pluie": resume.get("totalprecip_mm"),
             "proba": resume.get("daily_chance_of_rain"),
@@ -200,20 +204,20 @@ def lire_weatherapi(reponse, ville):
     return previsions
 
 
-def weatherapi(villes):
+def weatherapi(stations):
     cle = os.environ["WEATHERAPI_KEY"]
     previsions = []
-    for ville in villes:
+    for station in stations:
         url = "https://api.weatherapi.com/v1/forecast.json?key=%s&q=%s,%s&days=3" % (
-            cle, ville["lat"], ville["lon"])
-        previsions.extend(lire_weatherapi(telecharger_json(url), ville["code"]))
+            cle, station["lat"], station["lon"])
+        previsions.extend(lire_weatherapi(telecharger_json(url), station["code"]))
         time.sleep(0.2)
     return previsions
 
 
 # --- AccuWeather (offre gratuite : 5 jours, 50 appels par jour) --------------
 
-def lire_accuweather(reponse, ville):
+def lire_accuweather(reponse, station):
     previsions = []
     for jour in reponse.get("DailyForecasts") or []:
         demi_journees = [jour.get("Day") or {}, jour.get("Night") or {}]
@@ -229,7 +233,7 @@ def lire_accuweather(reponse, ville):
         pluies, probas = valeurs("TotalLiquid", "Value"), valeurs("PrecipitationProbability")
         vents = valeurs("Wind", "Speed", "Value")
         previsions.append({
-            "ville": ville, "source": "accuweather", "date": jour["Date"][:10],
+            "station": station, "source": "accuweather", "date": jour["Date"][:10],
             "tmin": jour["Temperature"]["Minimum"]["Value"],
             "tmax": jour["Temperature"]["Maximum"]["Value"],
             "pluie": sum(pluies) if pluies else None,
@@ -239,25 +243,25 @@ def lire_accuweather(reponse, ville):
     return previsions
 
 
-def accuweather(villes):
+def accuweather(stations):
     cle = os.environ["ACCUWEATHER_KEY"]
     base = "https://dataservice.accuweather.com"
-    # L'identifiant de lieu d'une ville ne change pas : on ne le demande qu'une
-    # fois, pour ne pas dépenser un appel de plus par ville chaque jour.
+    # L'identifiant de lieu d'une station ne change pas : on ne le demande qu'une
+    # fois, pour ne pas dépenser un appel de plus par station chaque jour.
     lieux = {}
     if os.path.exists(LIEUX_ACCUWEATHER):
         with open(LIEUX_ACCUWEATHER, encoding="utf-8") as fichier:
             lieux = json.load(fichier)
     previsions = []
     try:
-        for ville in villes[:VILLES_OFFRE_LIMITEE]:
-            if ville["code"] not in lieux:
+        for station in stations[:STATIONS_OFFRE_LIMITEE]:
+            if station["code"] not in lieux:
                 url = "%s/locations/v1/cities/geoposition/search?apikey=%s&q=%s,%s" % (
-                    base, cle, ville["lat"], ville["lon"])
-                lieux[ville["code"]] = telecharger_json(url, essais=1)["Key"]
+                    base, cle, station["lat"], station["lon"])
+                lieux[station["code"]] = telecharger_json(url, essais=1)["Key"]
             url = "%s/forecasts/v1/daily/5day/%s?apikey=%s&metric=true&details=true" % (
-                base, lieux[ville["code"]], cle)
-            previsions.extend(lire_accuweather(telecharger_json(url, essais=1), ville["code"]))
+                base, lieux[station["code"]], cle)
+            previsions.extend(lire_accuweather(telecharger_json(url, essais=1), station["code"]))
             time.sleep(0.2)
     finally:
         with open(LIEUX_ACCUWEATHER, "w", encoding="utf-8") as fichier:
@@ -267,7 +271,7 @@ def accuweather(villes):
 
 # --- Tomorrow.io (offre gratuite : 5 jours horaires, 25 appels par heure) ----
 
-def lire_tomorrow(reponse, ville):
+def lire_tomorrow(reponse, station):
     jours = defaultdict(lambda: {"t": [], "pluie": 0.0, "proba": [], "vent": []})
     for point in (reponse.get("timelines") or {}).get("hourly") or []:
         instant = datetime.strptime(point["time"], "%Y-%m-%dT%H:%M:%SZ").replace(
@@ -287,21 +291,21 @@ def lire_tomorrow(reponse, ville):
         if len(jour["t"]) < 24:  # jour incomplet (aujourd'hui, fin de série)
             continue
         previsions.append({
-            "ville": ville, "source": "tomorrow", "date": date,
+            "station": station, "source": "tomorrow", "date": date,
             "tmin": min(jour["t"]), "tmax": max(jour["t"]),
             "pluie": jour["pluie"], "proba": max(jour["proba"]), "vent": max(jour["vent"]),
         })
     return previsions
 
 
-def tomorrow(villes):
+def tomorrow(stations):
     cle = os.environ["TOMORROW_KEY"]
     previsions = []
-    for ville in villes[:VILLES_OFFRE_LIMITEE]:
+    for station in stations[:STATIONS_OFFRE_LIMITEE]:
         url = ("https://api.tomorrow.io/v4/weather/forecast"
                "?location=%s,%s&timesteps=1h&units=metric&apikey=%s") % (
-                   ville["lat"], ville["lon"], cle)
-        previsions.extend(lire_tomorrow(telecharger_json(url, essais=1), ville["code"]))
+                   station["lat"], station["lon"], cle)
+        previsions.extend(lire_tomorrow(telecharger_json(url, essais=1), station["code"]))
         time.sleep(0.5)  # offre gratuite : 3 appels par seconde
     return previsions
 

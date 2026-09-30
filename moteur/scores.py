@@ -1,15 +1,18 @@
-"""Compare les prévisions enregistrées aux relevés et écrit site/data/scores.json.
+"""Compare les prévisions enregistrées aux relevés et écrit les scores du site.
+
+site/data/scores.json porte le classement national ; site/data/scores/DD.json
+celui de chaque station du département DD.
 
 Une prévision est « juste » si la température est à ±2 °C du relevé, et si
 elle annonce correctement un jour de pluie (au moins 1 mm) ou un jour sec.
 python3 -m moteur.scores
 """
 import glob
-import json
 import os
 
 from .commun import (
-    OBSERVATIONS, PREVISIONS, SCORES, aujourdhui, charger_villes, lire_csv, nombre,
+    OBSERVATIONS, PREVISIONS, SITE, aujourdhui, charger_stations, ecrire_json, lire_csv,
+    nombre,
 )
 from .sources import SOURCES
 
@@ -60,73 +63,67 @@ def comparer(prevision, observation):
 
 
 def calculer(previsions, observations):
-    """{ville: {source: {échéance: sommes}}}, plus la pseudo-ville « FR » (toutes)."""
-    releves = {(o["ville"], o["date"]): o for o in observations}
-    scores = {}
+    """{station: {source: {échéance: sommes}}}, plus « FR » (toutes), et les jours comparés."""
+    releves = {(o["station"], o["date"]): o for o in observations}
+    scores, jours = {}, set()
     for prevision in previsions:
-        observation = releves.get((prevision["ville"], prevision["date"]))
+        observation = releves.get((prevision["station"], prevision["date"]))
         if observation is None:
             continue
+        jours.add(prevision["date"])
         contribution = comparer(prevision, observation)
-        for ville in (prevision["ville"], "FR"):
-            sommes = (scores.setdefault(ville, {})
+        for station in (prevision["station"], "FR"):
+            sommes = (scores.setdefault(station, {})
                       .setdefault(prevision["source"], {})
                       .setdefault(str(prevision["echeance"]), [0.0] * len(COLONNES)))
             for i, valeur in enumerate(contribution):
                 sommes[i] += valeur
-    return scores
+    return scores, sorted(jours)
 
 
-def arrondir(scores):
+def arrondir(sources):
     return {
-        ville: {
-            source: {e: [round(v, 2) for v in sommes] for e, sommes in echeances.items()}
-            for source, echeances in sources.items()
-        }
-        for ville, sources in scores.items()
+        source: {e: [round(v, 2) for v in sommes] for e, sommes in echeances.items()}
+        for source, echeances in sources.items()
     }
 
 
-def construire(villes, previsions, observations):
-    scores = arrondir(calculer(previsions, observations))
-    stations = {}
-    for observation in sorted(observations, key=lambda o: o["date"]):
-        stations[observation["ville"]] = observation  # la plus récente l'emporte
-    fiches = [{"code": "FR", "nom": "France entière (%d villes)" % len(villes)}]
-    for ville in villes:
-        fiche = {"code": ville["code"], "nom": ville["nom"], "dep": ville["dep"]}
-        station = stations.get(ville["code"])
-        if station:
-            fiche["station"] = station["nom_station"]
-            fiche["dist_km"] = nombre(station["dist_km"])
-        fiches.append(fiche)
-    jours = sorted({p["date"] for p in previsions
-                    if (p["ville"], p["date"]) in {(o["ville"], o["date"]) for o in observations}})
-    return {
+def construire(stations, previsions, observations):
+    """Le résumé national et, par département, les stations avec leurs scores."""
+    scores, jours = calculer(previsions, observations)
+    departements = {}
+    for station in stations:
+        # Les deux premiers chiffres d'une station sont son département.
+        departements.setdefault(station["code"][:2], {})[station["code"]] = {
+            "nom": station["nom"], "scores": arrondir(scores.get(station["code"], {})),
+        }
+    resume = {
         "maj": aujourdhui().isoformat(),
         "premier_jour": jours[0] if jours else None,
         "dernier_jour": jours[-1] if jours else None,
         "jours": len(jours),
+        "stations": len(stations),
         "colonnes": COLONNES,
         "sources": SOURCES,
-        "villes": fiches,
-        "scores": scores,
+        "france": arrondir(scores.get("FR", {})),
     }
+    return resume, departements
 
 
-def charger_previsions():
-    previsions = []
-    for chemin in sorted(glob.glob(os.path.join(PREVISIONS, "*.csv.gz"))):
+def lire_tout(dossier, motif):
+    """Lignes de tous les fichiers du dossier, lues une à une (les prévisions sont volumineuses)."""
+    for chemin in sorted(glob.glob(os.path.join(dossier, motif))):
         if os.path.basename(chemin).startswith("._"):  # fichiers parasites macOS
             continue
-        previsions.extend(lire_csv(chemin))
-    return previsions
+        yield from lire_csv(chemin)
 
 
 if __name__ == "__main__":
-    resultat = construire(charger_villes(), charger_previsions(), lire_csv(OBSERVATIONS))
-    os.makedirs(os.path.dirname(SCORES), exist_ok=True)
-    with open(SCORES, "w", encoding="utf-8") as fichier:
-        json.dump(resultat, fichier, ensure_ascii=False, separators=(",", ":"))
-    print("%d jours comparés, %d villes avec un score" % (
-        resultat["jours"], max(len(resultat["scores"]) - 1, 0)))
+    resume, departements = construire(
+        charger_stations(), lire_tout(PREVISIONS, "*.csv.gz"),
+        lire_tout(OBSERVATIONS, "*.csv"))
+    ecrire_json(os.path.join(SITE, "scores.json"), resume, separators=(",", ":"))
+    for departement, stations in departements.items():
+        ecrire_json(os.path.join(SITE, "scores", "%s.json" % departement), stations,
+                    separators=(",", ":"))
+    print("%d jours comparés, %d stations" % (resume["jours"], resume["stations"]))
