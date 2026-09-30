@@ -128,6 +128,33 @@ class TestSources(unittest.TestCase):
         self.assertEqual(previsions[0]["tmax"], 18.2)
         self.assertEqual(previsions[0]["proba"], 40)
 
+    def test_accuweather(self):
+        reponse = {"DailyForecasts": [{
+            "Date": "2026-10-01T07:00:00+02:00",
+            "Temperature": {"Minimum": {"Value": 9.0}, "Maximum": {"Value": 19.5}},
+            "Day": {"PrecipitationProbability": 30, "TotalLiquid": {"Value": 1.2},
+                    "Wind": {"Speed": {"Value": 14.8}}},
+            "Night": {"PrecipitationProbability": 55, "TotalLiquid": {"Value": 0.8},
+                      "Wind": {"Speed": {"Value": 9.3}}}}]}
+        previsions = sources.lire_accuweather(reponse, "69123")
+        self.assertEqual(previsions[0]["date"], "2026-10-01")
+        self.assertEqual((previsions[0]["tmin"], previsions[0]["tmax"]), (9.0, 19.5))
+        self.assertAlmostEqual(previsions[0]["pluie"], 2.0)
+        self.assertEqual((previsions[0]["proba"], previsions[0]["vent"]), (55, 14.8))
+
+    def test_tomorrow_jour_complet_seulement(self):
+        points = [{"time": "2026-09-30T%02d:00:00Z" % h if h < 24
+                   else "2026-10-01T%02d:00:00Z" % (h - 24),
+                   "values": {"temperature": 10 + h % 12, "windSpeed": 5,
+                              "rainAccumulation": 0.5, "precipitationProbability": h}}
+                  for h in range(22, 48)]  # de minuit (Paris) le 1er à 1 h le 2
+        previsions = sources.lire_tomorrow({"timelines": {"hourly": points}}, "69123")
+        self.assertEqual([p["date"] for p in previsions], ["2026-10-01"])
+        self.assertEqual((previsions[0]["tmin"], previsions[0]["tmax"]), (10, 21))
+        self.assertAlmostEqual(previsions[0]["pluie"], 12.0)
+        self.assertAlmostEqual(previsions[0]["vent"], 18.0)
+        self.assertEqual(previsions[0]["proba"], 45)
+
 
 class TestObservations(unittest.TestCase):
     TEXTE = (

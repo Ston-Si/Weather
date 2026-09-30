@@ -25,8 +25,10 @@ Tests : `python3 -m unittest discover tests`
 - Avec clé (ignorés tant que la clé manque) : OpenWeatherMap (`OWM_KEY`,
   5 jours) et WeatherAPI (`WEATHERAPI_KEY`, 3 jours). Les clés se déclarent
   dans les *secrets* du dépôt GitHub.
-- AccuWeather et Tomorrow.io ne sont pas suivis : leurs offres gratuites
-  (50 appels par jour, 25 par heure) ne couvrent pas 200 villes.
+- Avec clé, sur les 20 plus grandes villes seulement : AccuWeather
+  (`ACCUWEATHER_KEY`, 5 jours) et Tomorrow.io (`TOMORROW_KEY`, 4 jours). Leurs
+  offres gratuites (50 appels par jour, 25 par heure) ne couvrent pas 200
+  villes ; leur score « France entière » ne porte donc que sur ces 20 villes.
 
 ## Villes
 

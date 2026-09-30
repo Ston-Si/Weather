@@ -4,12 +4,13 @@ Chaque prévision est un dict : ville, source, date (AAAA-MM-JJ, jour local),
 tmin/tmax (°C), pluie (mm), proba (% de pluie, ou None), vent (km/h, vent moyen
 maximal). Les fonctions `lire_*` sont pures (testées sans réseau).
 """
+import json
 import os
 import time
 from collections import defaultdict
 from datetime import datetime, timezone
 
-from .commun import PARIS, telecharger_json
+from .commun import PARIS, RACINE, telecharger_json
 
 # Modèles servis par Open-Meteo : ce sont les modèles bruts des organismes, pas
 # leurs applications (qui ajoutent leurs propres corrections).
@@ -30,7 +31,17 @@ SOURCES = {
     "yr": {"nom": "yr.no", "detail": "prévisions de MET Norway"},
     "openweathermap": {"nom": "OpenWeatherMap", "detail": "offre gratuite, jusqu'à 5 jours"},
     "weatherapi": {"nom": "WeatherAPI", "detail": "offre gratuite, jusqu'à 3 jours"},
+    "accuweather": {"nom": "AccuWeather",
+                    "detail": "offre gratuite : 20 plus grandes villes, jusqu'à 5 jours"},
+    "tomorrow": {"nom": "Tomorrow.io",
+                 "detail": "offre gratuite : 20 plus grandes villes, jusqu'à 4 jours"},
 }
+
+# Les offres gratuites d'AccuWeather (50 appels par jour) et de Tomorrow.io
+# (25 par heure) ne couvrent pas toutes les villes : on suit les plus peuplées,
+# en gardant de la marge pour relancer une collecte.
+VILLES_OFFRE_LIMITEE = 20
+LIEUX_ACCUWEATHER = os.path.join(RACINE, "data", "accuweather_lieux.json")
 
 
 def _jour_local(instant):
@@ -200,10 +211,107 @@ def weatherapi(villes):
     return previsions
 
 
+# --- AccuWeather (offre gratuite : 5 jours, 50 appels par jour) --------------
+
+def lire_accuweather(reponse, ville):
+    previsions = []
+    for jour in reponse.get("DailyForecasts") or []:
+        demi_journees = [jour.get("Day") or {}, jour.get("Night") or {}]
+
+        def valeurs(*chemin):
+            trouvees = []
+            for bloc in demi_journees:
+                for cle in chemin:
+                    bloc = (bloc or {}).get(cle)
+                if bloc is not None:
+                    trouvees.append(bloc)
+            return trouvees
+        pluies, probas = valeurs("TotalLiquid", "Value"), valeurs("PrecipitationProbability")
+        vents = valeurs("Wind", "Speed", "Value")
+        previsions.append({
+            "ville": ville, "source": "accuweather", "date": jour["Date"][:10],
+            "tmin": jour["Temperature"]["Minimum"]["Value"],
+            "tmax": jour["Temperature"]["Maximum"]["Value"],
+            "pluie": sum(pluies) if pluies else None,
+            "proba": max(probas) if probas else None,
+            "vent": max(vents) if vents else None,
+        })
+    return previsions
+
+
+def accuweather(villes):
+    cle = os.environ["ACCUWEATHER_KEY"]
+    base = "https://dataservice.accuweather.com"
+    # L'identifiant de lieu d'une ville ne change pas : on ne le demande qu'une
+    # fois, pour ne pas dépenser un appel de plus par ville chaque jour.
+    lieux = {}
+    if os.path.exists(LIEUX_ACCUWEATHER):
+        with open(LIEUX_ACCUWEATHER, encoding="utf-8") as fichier:
+            lieux = json.load(fichier)
+    previsions = []
+    try:
+        for ville in villes[:VILLES_OFFRE_LIMITEE]:
+            if ville["code"] not in lieux:
+                url = "%s/locations/v1/cities/geoposition/search?apikey=%s&q=%s,%s" % (
+                    base, cle, ville["lat"], ville["lon"])
+                lieux[ville["code"]] = telecharger_json(url, essais=1)["Key"]
+            url = "%s/forecasts/v1/daily/5day/%s?apikey=%s&metric=true&details=true" % (
+                base, lieux[ville["code"]], cle)
+            previsions.extend(lire_accuweather(telecharger_json(url, essais=1), ville["code"]))
+            time.sleep(0.2)
+    finally:
+        with open(LIEUX_ACCUWEATHER, "w", encoding="utf-8") as fichier:
+            json.dump(lieux, fichier, indent=0, sort_keys=True)
+    return previsions
+
+
+# --- Tomorrow.io (offre gratuite : 5 jours horaires, 25 appels par heure) ----
+
+def lire_tomorrow(reponse, ville):
+    jours = defaultdict(lambda: {"t": [], "pluie": 0.0, "proba": [], "vent": []})
+    for point in (reponse.get("timelines") or {}).get("hourly") or []:
+        instant = datetime.strptime(point["time"], "%Y-%m-%dT%H:%M:%SZ").replace(
+            tzinfo=timezone.utc)
+        valeurs = point["values"]
+        if valeurs.get("temperature") is None:
+            continue
+        jour = jours[_jour_local(instant)]
+        jour["t"].append(valeurs["temperature"])
+        # Neige et grésil en équivalent eau, comme un pluviomètre.
+        for cle in ("rainAccumulation", "snowAccumulationLwe", "sleetAccumulationLwe"):
+            jour["pluie"] += valeurs.get(cle) or 0.0
+        jour["proba"].append(valeurs.get("precipitationProbability") or 0.0)
+        jour["vent"].append((valeurs.get("windSpeed") or 0.0) * 3.6)
+    previsions = []
+    for date, jour in sorted(jours.items()):
+        if len(jour["t"]) < 24:  # jour incomplet (aujourd'hui, fin de série)
+            continue
+        previsions.append({
+            "ville": ville, "source": "tomorrow", "date": date,
+            "tmin": min(jour["t"]), "tmax": max(jour["t"]),
+            "pluie": jour["pluie"], "proba": max(jour["proba"]), "vent": max(jour["vent"]),
+        })
+    return previsions
+
+
+def tomorrow(villes):
+    cle = os.environ["TOMORROW_KEY"]
+    previsions = []
+    for ville in villes[:VILLES_OFFRE_LIMITEE]:
+        url = ("https://api.tomorrow.io/v4/weather/forecast"
+               "?location=%s,%s&timesteps=1h&units=metric&apikey=%s") % (
+                   ville["lat"], ville["lon"], cle)
+        previsions.extend(lire_tomorrow(telecharger_json(url, essais=1), ville["code"]))
+        time.sleep(0.5)  # offre gratuite : 3 appels par seconde
+    return previsions
+
+
 # (fonction, variable d'environnement requise ou None)
 COLLECTEURS = [
     (open_meteo, None),
     (yr, None),
     (openweathermap, "OWM_KEY"),
     (weatherapi, "WEATHERAPI_KEY"),
+    (accuweather, "ACCUWEATHER_KEY"),
+    (tomorrow, "TOMORROW_KEY"),
 ]

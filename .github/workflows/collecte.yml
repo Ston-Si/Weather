@@ -23,6 +23,8 @@ jobs:
     env:
       OWM_KEY: ${{ secrets.OWM_KEY }}
       WEATHERAPI_KEY: ${{ secrets.WEATHERAPI_KEY }}
+      ACCUWEATHER_KEY: ${{ secrets.ACCUWEATHER_KEY }}
+      TOMORROW_KEY: ${{ secrets.TOMORROW_KEY }}
       METEO_USER_AGENT: comparateur-meteo/1.0 (https://github.com/${{ github.repository }})
     steps:
       - uses: actions/checkout@v4
