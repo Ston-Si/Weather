@@ -4600,10 +4600,10 @@
 "population": 6659
 },
 {
-"code": "74045001",
-"nom": "LE BOUCHET_SAPC",
-"lat": 45.7995,
-"lon": 6.367667,
+"code": "74280001",
+"nom": "THONES",
+"lat": 45.877833,
+"lon": 6.323,
 "ville": "Thônes",
 "population": 6654
 },
@@ -8192,10 +8192,10 @@
 "population": 2896
 },
 {
-"code": "74236002",
-"nom": "MONT ARBOIS",
+"code": "74173001",
+"nom": "MEGEVE",
 "lat": 45.855333,
-"lon": 6.669,
+"lon": 6.608167,
 "ville": "Megève",
 "population": 2893
 },
@@ -9123,7 +9123,7 @@
 "code": "07101001",
 "nom": "GROSPIERRES",
 "lat": 44.411333,
-"lon": 4.301,
+"lon": 4.300833,
 "ville": "Ruoms",
 "population": 2311
 },
@@ -10078,6 +10078,14 @@
 "lon": -0.5435,
 "ville": "Arthez-de-Béarn",
 "population": 1837
+},
+{
+"code": "74136003",
+"nom": "GRAND BORNAND",
+"lat": 45.970333,
+"lon": 6.444667,
+"ville": "Glières-Val-de-Borne",
+"population": 1824
 },
 {
 "code": "58264001",
@@ -11133,6 +11141,14 @@
 "lat": 45.201167,
 "lon": 4.554333,
 "ville": "Saint-Alban-d'Ay",
+"population": 1384
+},
+{
+"code": "74045001",
+"nom": "LE BOUCHET_SAPC",
+"lat": 45.7995,
+"lon": 6.367667,
+"ville": "Val de Chaise",
 "population": 1384
 },
 {
@@ -12728,14 +12744,6 @@
 "population": 801
 },
 {
-"code": "73132003",
-"nom": "COL-DES-SAISIES",
-"lat": 45.755,
-"lon": 6.535333,
-"ville": "Flumet",
-"population": 799
-},
-{
 "code": "21561003",
 "nom": "ST-MARTIN-DU-M",
 "lat": 47.4005,
@@ -12811,7 +12819,7 @@
 "code": "07105001",
 "nom": "ISSANLAS",
 "lat": 44.773167,
-"lon": 3.975167,
+"lon": 3.981667,
 "ville": "Coucouron",
 "population": 777
 },
@@ -13030,6 +13038,14 @@
 "lon": 7.1335,
 "ville": "Clans",
 "population": 703
+},
+{
+"code": "73132003",
+"nom": "COL-DES-SAISIES",
+"lat": 45.755,
+"lon": 6.535333,
+"ville": "Villard-sur-Doron",
+"population": 702
 },
 {
 "code": "04184001",
@@ -13462,6 +13478,14 @@
 "lon": 2.747667,
 "ville": "Laveissière",
 "population": 537
+},
+{
+"code": "07105003",
+"nom": "ISSANLAS_SAPC",
+"lat": 44.7555,
+"lon": 3.975333,
+"ville": "Pradelles",
+"population": 531
 },
 {
 "code": "20107001",
@@ -14006,14 +14030,6 @@
 "lon": 3.238167,
 "ville": "Antrenas",
 "population": 331
-},
-{
-"code": "07105003",
-"nom": "ISSANLAS_SAPC",
-"lat": 44.7555,
-"lon": 3.975167,
-"ville": "Lespéron",
-"population": 330
 },
 {
 "code": "21326001",
@@ -14690,6 +14706,12 @@
 "nom": "AIGUILLES ROUGES-NIVOSE",
 "lat": 45.986333,
 "lon": 6.896833
+},
+{
+"code": "74236002",
+"nom": "MONT ARBOIS",
+"lat": 45.855333,
+"lon": 6.669
 },
 {
 "code": "75114007",
