@@ -11712,10 +11712,10 @@
 "population": 1174
 },
 {
-"code": "42248002",
-"nom": "ST-JUST-EN-CHEV",
-"lat": 45.9085,
-"lon": 3.844167,
+"code": "42034001",
+"nom": "COL DE CERVIERES",
+"lat": 45.850667,
+"lon": 3.766167,
 "ville": "Saint-Just-en-Chevalet",
 "population": 1169
 },
@@ -11750,14 +11750,6 @@
 "lon": 4.480333,
 "ville": "Matour",
 "population": 1161
-},
-{
-"code": "42034001",
-"nom": "COL DE CERVIERES",
-"lat": 45.850667,
-"lon": 3.766167,
-"ville": "Chabreloche",
-"population": 1156
 },
 {
 "code": "89365001",
