@@ -9176,8 +9176,8 @@
 "population": 2296
 },
 {
-"code": "05026400",
-"nom": "CEILLAC_NIVO",
+"code": "05026001",
+"nom": "CEILLAC",
 "lat": 44.671167,
 "lon": 6.776167,
 "ville": "Guillestre",
@@ -13984,10 +13984,10 @@
 "population": 341
 },
 {
-"code": "05007003",
-"nom": "ARVIEUX",
-"lat": 44.796,
-"lon": 6.728,
+"code": "05007001",
+"nom": "ARVIEUX LA CHALP",
+"lat": 44.781167,
+"lon": 6.736667,
 "ville": "Arvieux",
 "population": 340
 },
@@ -14566,6 +14566,18 @@
 "lon": 4.049333,
 "ville": "Loubaresse",
 "population": 43
+},
+{
+"code": "05007003",
+"nom": "ARVIEUX",
+"lat": 44.796,
+"lon": 6.728
+},
+{
+"code": "05026400",
+"nom": "CEILLAC_NIVO",
+"lat": 44.671167,
+"lon": 6.776167
 },
 {
 "code": "05063402",
