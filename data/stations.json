@@ -3872,10 +3872,10 @@
 "population": 8545
 },
 {
-"code": "07186001",
-"nom": "PRIVAS",
-"lat": 44.718833,
-"lon": 4.596333,
+"code": "07066001",
+"nom": "CHOMERAC SA_RCE",
+"lat": 44.6995,
+"lon": 4.6485,
 "ville": "Privas",
 "population": 8538
 },
@@ -4600,10 +4600,10 @@
 "population": 6659
 },
 {
-"code": "74280001",
-"nom": "THONES",
-"lat": 45.877833,
-"lon": 6.323,
+"code": "74045001",
+"nom": "LE BOUCHET_SAPC",
+"lat": 45.7995,
+"lon": 6.367667,
 "ville": "Thônes",
 "population": 6654
 },
@@ -4670,14 +4670,6 @@
 "lon": -2.499333,
 "ville": "Le Mené",
 "population": 6556
-},
-{
-"code": "38082001",
-"nom": "CHARAVINES",
-"lat": 45.432833,
-"lon": 5.517333,
-"ville": "Rives",
-"population": 6549
 },
 {
 "code": "47213001",
@@ -5200,10 +5192,10 @@
 "population": 5770
 },
 {
-"code": "74085001",
-"nom": "CONTAMINES MJ",
-"lat": 45.822333,
-"lon": 6.728833,
+"code": "74143003",
+"nom": "HOUCHES (LES)",
+"lat": 45.8925,
+"lon": 6.800667,
 "ville": "Saint-Gervais-les-Bains",
 "population": 5755
 },
@@ -5312,10 +5304,10 @@
 "population": 5610
 },
 {
-"code": "38334001",
-"nom": "REVEL",
-"lat": 45.185,
-"lon": 5.869167,
+"code": "38567002",
+"nom": "CHAMROUSSE",
+"lat": 45.128,
+"lon": 5.878333,
 "ville": "Saint-Martin-d'Uriage",
 "population": 5587
 },
@@ -6208,10 +6200,10 @@
 "population": 4490
 },
 {
-"code": "38442001",
-"nom": "GRANDE-CHARTREUSE",
-"lat": 45.363333,
-"lon": 5.791833,
+"code": "38362001",
+"nom": "ST AUPRE_SAPC",
+"lat": 45.392667,
+"lon": 5.657333,
 "ville": "Saint-Laurent-du-Pont",
 "population": 4490
 },
@@ -6704,14 +6696,6 @@
 "population": 4009
 },
 {
-"code": "38567002",
-"nom": "CHAMROUSSE",
-"lat": 45.128,
-"lon": 5.878333,
-"ville": "Vaulnaveys-le-Haut",
-"population": 4006
-},
-{
 "code": "20249003",
 "nom": "PROPRIANO",
 "lat": 41.678167,
@@ -6752,10 +6736,10 @@
 "population": 3976
 },
 {
-"code": "38163001",
-"nom": "FOND-DE-FRANCE",
-"lat": 45.28,
-"lon": 6.075,
+"code": "38504001",
+"nom": "THEYS",
+"lat": 45.302333,
+"lon": 5.995667,
 "ville": "Allevard",
 "population": 3971
 },
@@ -6936,10 +6920,10 @@
 "population": 3791
 },
 {
-"code": "73181001",
-"nom": "MOUTIERS",
-"lat": 45.484667,
-"lon": 6.534167,
+"code": "73187006",
+"nom": "LA LECHERE_SAPC",
+"lat": 45.549167,
+"lon": 6.501,
 "ville": "Grand-Aigueblanche",
 "population": 3780
 },
@@ -7328,14 +7312,6 @@
 "population": 3524
 },
 {
-"code": "74143003",
-"nom": "HOUCHES (LES)",
-"lat": 45.8925,
-"lon": 6.800667,
-"ville": "Les Houches",
-"population": 3515
-},
-{
 "code": "46128002",
 "nom": "GRAMAT - PARC",
 "lat": 44.760167,
@@ -7376,10 +7352,10 @@
 "population": 3498
 },
 {
-"code": "74134002",
-"nom": "GETS (LES)",
-"lat": 46.158667,
-"lon": 6.670333,
+"code": "74191003",
+"nom": "LE PLENEY",
+"lat": 46.168333,
+"lon": 6.692833,
 "ville": "Taninges",
 "population": 3491
 },
@@ -7414,14 +7390,6 @@
 "lon": -0.381833,
 "ville": "Val-de-Cognac",
 "population": 3471
-},
-{
-"code": "38504001",
-"nom": "THEYS",
-"lat": 45.302333,
-"lon": 5.995667,
-"ville": "Crêts en Belledonne",
-"population": 3470
 },
 {
 "code": "60518001",
@@ -7702,14 +7670,6 @@
 "lon": -0.22,
 "ville": "Nay",
 "population": 3184
-},
-{
-"code": "07066001",
-"nom": "CHOMERAC SA_RCE",
-"lat": 44.6995,
-"lon": 4.6485,
-"ville": "Chomérac",
-"population": 3183
 },
 {
 "code": "11159002",
@@ -8192,10 +8152,10 @@
 "population": 2896
 },
 {
-"code": "74173001",
-"nom": "MEGEVE",
+"code": "74236002",
+"nom": "MONT ARBOIS",
 "lat": 45.855333,
-"lon": 6.608167,
+"lon": 6.669,
 "ville": "Megève",
 "population": 2893
 },
@@ -8624,14 +8584,6 @@
 "population": 2662
 },
 {
-"code": "74191003",
-"nom": "LE PLENEY",
-"lat": 46.168333,
-"lon": 6.692833,
-"ville": "Morzine",
-"population": 2658
-},
-{
 "code": "36103001",
 "nom": "LUCAY-LE-MALE",
 "lat": 47.1305,
@@ -8678,14 +8630,6 @@
 "lon": 7.148,
 "ville": "La Broque",
 "population": 2625
-},
-{
-"code": "38362001",
-"nom": "ST AUPRE_SAPC",
-"lat": 45.392667,
-"lon": 5.657333,
-"ville": "Saint-Étienne-de-Crossey",
-"population": 2619
 },
 {
 "code": "61387001",
@@ -8754,7 +8698,7 @@
 {
 "code": "62044001",
 "nom": "ATTIN",
-"lat": 50.485333,
+"lat": 50.485667,
 "lon": 1.765833,
 "ville": "Verton",
 "population": 2571
@@ -8790,14 +8734,6 @@
 "lon": 2.416833,
 "ville": "Saint-Martin-d'Auxigny",
 "population": 2546
-},
-{
-"code": "73187006",
-"nom": "LA LECHERE_SAPC",
-"lat": 45.549167,
-"lon": 6.501,
-"ville": "La Léchère",
-"population": 2538
 },
 {
 "code": "72172003",
@@ -8928,10 +8864,10 @@
 "population": 2405
 },
 {
-"code": "07330004",
-"nom": "VALLON SA",
-"lat": 44.391833,
-"lon": 4.403667,
+"code": "07101001",
+"nom": "GROSPIERRES",
+"lat": 44.411333,
+"lon": 4.300833,
 "ville": "Vallon-Pont-d'Arc",
 "population": 2403
 },
@@ -9120,14 +9056,6 @@
 "population": 2312
 },
 {
-"code": "07101001",
-"nom": "GROSPIERRES",
-"lat": 44.411333,
-"lon": 4.300833,
-"ville": "Ruoms",
-"population": 2311
-},
-{
 "code": "66233001",
 "nom": "VIVES",
 "lat": 42.5365,
@@ -9176,8 +9104,8 @@
 "population": 2296
 },
 {
-"code": "05026001",
-"nom": "CEILLAC",
+"code": "05026400",
+"nom": "CEILLAC_NIVO",
 "lat": 44.671167,
 "lon": 6.776167,
 "ville": "Guillestre",
@@ -10592,10 +10520,10 @@
 "population": 1584
 },
 {
-"code": "74001001",
-"nom": "ABONDANCE",
-"lat": 46.2845,
-"lon": 6.734167,
+"code": "74063002",
+"nom": "CHATEL",
+"lat": 46.255833,
+"lon": 6.818833,
 "ville": "Abondance",
 "population": 1583
 },
@@ -10888,10 +10816,10 @@
 "population": 1479
 },
 {
-"code": "38242001",
-"nom": "MONESTIER",
-"lat": 44.921667,
-"lon": 5.6375,
+"code": "38342001",
+"nom": "ROISSARD",
+"lat": 44.882167,
+"lon": 5.6395,
 "ville": "Monestier-de-Clermont",
 "population": 1478
 },
@@ -11144,14 +11072,6 @@
 "population": 1384
 },
 {
-"code": "74045001",
-"nom": "LE BOUCHET_SAPC",
-"lat": 45.7995,
-"lon": 6.367667,
-"ville": "Val de Chaise",
-"population": 1384
-},
-{
 "code": "03114001",
 "nom": "FERTE-HAUTERIVE",
 "lat": 46.376833,
@@ -11168,10 +11088,10 @@
 "population": 1381
 },
 {
-"code": "04205001",
-"nom": "SEYNE",
-"lat": 44.3515,
-"lon": 6.3645,
+"code": "04126001",
+"nom": "MONTCLAR_SAPC",
+"lat": 44.391833,
+"lon": 6.333333,
 "ville": "Seyne",
 "population": 1379
 },
@@ -11512,10 +11432,10 @@
 "population": 1251
 },
 {
-"code": "65123007",
-"nom": "ARTIGUES",
-"lat": 42.928167,
-"lon": 0.203167,
+"code": "65059022",
+"nom": "LA MONGIE_SAPC",
+"lat": 42.908667,
+"lon": 0.170333,
 "ville": "Campan",
 "population": 1245
 },
@@ -11592,18 +11512,18 @@
 "population": 1209
 },
 {
-"code": "07161002",
-"nom": "MONTPEZAT",
-"lat": 44.703333,
-"lon": 4.229667,
+"code": "07025001",
+"nom": "BARNAS RAD",
+"lat": 44.666,
+"lon": 4.159833,
 "ville": "Thueyts",
 "population": 1205
 },
 {
-"code": "20362005",
-"nom": "ZONZA",
-"lat": 41.747167,
-"lon": 9.172,
+"code": "20142001",
+"nom": "LEVIE",
+"lat": 41.7035,
+"lon": 9.125833,
 "ville": "San-Gavino-di-Carbini",
 "population": 1204
 },
@@ -11701,14 +11621,6 @@
 "lat": 47.378,
 "lon": 6.472167,
 "ville": "Pays-de-Clerval",
-"population": 1174
-},
-{
-"code": "74063002",
-"nom": "CHATEL",
-"lat": 46.255833,
-"lon": 6.818833,
-"ville": "Châtel",
 "population": 1174
 },
 {
@@ -12032,10 +11944,10 @@
 "population": 1065
 },
 {
-"code": "73306005",
-"nom": "VALLOIRE FOREST",
-"lat": 45.173,
-"lon": 6.433167,
+"code": "73306401",
+"nom": "LES ROCHILLES-NIVOSE",
+"lat": 45.085,
+"lon": 6.469,
 "ville": "Valloire",
 "population": 1064
 },
@@ -12248,10 +12160,10 @@
 "population": 984
 },
 {
-"code": "38005001",
-"nom": "ALLEMOND",
-"lat": 45.203333,
-"lon": 6.040333,
+"code": "38527001",
+"nom": "VAUJANY",
+"lat": 45.149167,
+"lon": 6.047167,
 "ville": "Allemond",
 "population": 971
 },
@@ -12304,6 +12216,14 @@
 "population": 941
 },
 {
+"code": "73244001",
+"nom": "ST-JEAN DE BELLEVILLE",
+"lat": 45.427667,
+"lon": 6.482833,
+"ville": "Salins-Fontaine",
+"population": 941
+},
+{
 "code": "48095005",
 "nom": "MENDE",
 "lat": 44.533667,
@@ -12336,10 +12256,10 @@
 "population": 925
 },
 {
-"code": "05079001",
-"nom": "LE MONETIER LES BAINS",
-"lat": 44.9715,
-"lon": 6.514167,
+"code": "05181002",
+"nom": "VILLAR D'ARENE",
+"lat": 45.030833,
+"lon": 6.361667,
 "ville": "Le Monêtier-les-Bains",
 "population": 923
 },
@@ -12464,6 +12384,14 @@
 "population": 895
 },
 {
+"code": "07161001",
+"nom": "MONTPEZAT SA",
+"lat": 44.715667,
+"lon": 4.207,
+"ville": "Meyras",
+"population": 889
+},
+{
 "code": "46181001",
 "nom": "LUNEGARDE",
 "lat": 44.6785,
@@ -12582,6 +12510,14 @@
 "lon": 2.039833,
 "ville": "Marcillac-la-Croisille",
 "population": 857
+},
+{
+"code": "07099001",
+"nom": "GRAS",
+"lat": 44.429,
+"lon": 4.5655,
+"ville": "Saint-Remèze",
+"population": 847
 },
 {
 "code": "38446003",
@@ -12712,14 +12648,6 @@
 "population": 812
 },
 {
-"code": "38333003",
-"nom": "RENCUREL",
-"lat": 45.113333,
-"lon": 5.474333,
-"ville": "Izeron",
-"population": 809
-},
-{
 "code": "57740001",
 "nom": "WALDWISSE",
 "lat": 49.417,
@@ -12728,12 +12656,12 @@
 "population": 804
 },
 {
-"code": "01185006",
-"nom": "HAUTEVILLE_EDF_RIC-A2-DOUBLON",
-"lat": 45.979667,
-"lon": 5.598167,
-"ville": "Haut Valromey",
-"population": 801
+"code": "73132003",
+"nom": "COL-DES-SAISIES",
+"lat": 45.755,
+"lon": 6.535333,
+"ville": "Flumet",
+"population": 799
 },
 {
 "code": "21561003",
@@ -12750,14 +12678,6 @@
 "lon": 5.422167,
 "ville": "La Chapelle-en-Vercors",
 "population": 797
-},
-{
-"code": "04126001",
-"nom": "MONTCLAR_SAPC",
-"lat": 44.391833,
-"lon": 6.333333,
-"ville": "Ubaye-Serre-Ponçon",
-"population": 786
 },
 {
 "code": "63320001",
@@ -12840,14 +12760,6 @@
 "population": 773
 },
 {
-"code": "07161001",
-"nom": "MONTPEZAT SA",
-"lat": 44.715667,
-"lon": 4.207,
-"ville": "Montpezat-sous-Bauzon",
-"population": 770
-},
-{
 "code": "48069001",
 "nom": "GATUZIERES_SAPC",
 "lat": 44.195333,
@@ -12928,14 +12840,6 @@
 "population": 736
 },
 {
-"code": "73132001",
-"nom": "HAUTELUCE",
-"lat": 45.772333,
-"lon": 6.638833,
-"ville": "Hauteluce",
-"population": 734
-},
-{
 "code": "52084002",
 "nom": "BUSSON_SAPC",
 "lat": 48.328833,
@@ -12952,28 +12856,12 @@
 "population": 731
 },
 {
-"code": "65031005",
-"nom": "ARREAU BORDERES",
-"lat": 42.8995,
-"lon": 0.365,
-"ville": "Arreau",
-"population": 725
-},
-{
 "code": "83002004",
 "nom": "AIGUINES_SAPC",
 "lat": 43.7945,
 "lon": 6.244833,
 "ville": "Roumoules",
 "population": 725
-},
-{
-"code": "73244001",
-"nom": "ST-JEAN DE BELLEVILLE",
-"lat": 45.427667,
-"lon": 6.482833,
-"ville": "Les Avanchers-Valmorel",
-"population": 724
 },
 {
 "code": "46176001",
@@ -13032,14 +12920,6 @@
 "population": 703
 },
 {
-"code": "73132003",
-"nom": "COL-DES-SAISIES",
-"lat": 45.755,
-"lon": 6.535333,
-"ville": "Villard-sur-Doron",
-"population": 702
-},
-{
 "code": "04184001",
 "nom": "ST JURS",
 "lat": 43.900833,
@@ -13048,10 +12928,10 @@
 "population": 694
 },
 {
-"code": "65032005",
-"nom": "ARRENS MARSOUS",
-"lat": 42.946833,
-"lon": -0.2185,
+"code": "65018001",
+"nom": "ARBEOST_SAPC",
+"lat": 42.9885,
+"lon": -0.2785,
 "ville": "Arrens-Marsous",
 "population": 694
 },
@@ -13118,14 +12998,6 @@
 "lon": 6.716833,
 "ville": "Aussois",
 "population": 676
-},
-{
-"code": "20142001",
-"nom": "LEVIE",
-"lat": 41.7035,
-"lon": 9.125833,
-"ville": "Levie",
-"population": 674
 },
 {
 "code": "43037001",
@@ -13360,14 +13232,6 @@
 "population": 595
 },
 {
-"code": "07099001",
-"nom": "GRAS",
-"lat": 44.429,
-"lon": 4.5655,
-"ville": "Gras",
-"population": 591
-},
-{
 "code": "70168001",
 "nom": "CONFLANS-SUR-LA",
 "lat": 47.817,
@@ -13430,6 +13294,14 @@
 "lon": 3.738333,
 "ville": "Pont de Montvert - Sud Mont Lozère",
 "population": 557
+},
+{
+"code": "38005402",
+"nom": "AIGLETON-NIVOSE",
+"lat": 45.231,
+"lon": 6.038167,
+"ville": "Sainte-Agnès",
+"population": 548
 },
 {
 "code": "04134002",
@@ -13536,10 +13408,10 @@
 "population": 520
 },
 {
-"code": "38299002",
-"nom": "PELLAFOL-SAUTET",
-"lat": 44.816333,
-"lon": 5.908833,
+"code": "38207001",
+"nom": "LAVALDENS",
+"lat": 44.990667,
+"lon": 5.883333,
 "ville": "Valbonnais",
 "population": 520
 },
@@ -13648,14 +13520,6 @@
 "population": 483
 },
 {
-"code": "05139002",
-"nom": "ST ETIENNE-EN-DEVOLUY",
-"lat": 44.6945,
-"lon": 5.9405,
-"ville": "La Fare-en-Champsaur",
-"population": 482
-},
-{
 "code": "58106005",
 "nom": "DUN_SAPC",
 "lat": 47.312833,
@@ -13664,10 +13528,10 @@
 "population": 480
 },
 {
-"code": "05063001",
-"nom": "LA GRAVE",
-"lat": 45.054167,
-"lon": 6.285833,
+"code": "05063402",
+"nom": "LA MEIJE-NIVOSE",
+"lat": 45.012333,
+"lon": 6.265167,
 "ville": "La Grave",
 "population": 479
 },
@@ -13726,14 +13590,6 @@
 "lon": 4.2075,
 "ville": "Sommesous",
 "population": 467
-},
-{
-"code": "38207001",
-"nom": "LAVALDENS",
-"lat": 44.990667,
-"lon": 5.883333,
-"ville": "Laffrey",
-"population": 466
 },
 {
 "code": "05027001",
@@ -13800,6 +13656,14 @@
 "population": 426
 },
 {
+"code": "38299001",
+"nom": "PELLAFOL-CHANEAUX",
+"lat": 44.784167,
+"lon": 5.906167,
+"ville": "Corps",
+"population": 421
+},
+{
 "code": "08089003",
 "nom": "BUZANCY_SAPC",
 "lat": 49.427333,
@@ -13838,14 +13702,6 @@
 "lon": 2.362167,
 "ville": "Crocq",
 "population": 389
-},
-{
-"code": "04219001",
-"nom": "THORAME HAUTE",
-"lat": 44.091667,
-"lon": 6.557333,
-"ville": "Beauvezer",
-"population": 384
 },
 {
 "code": "20096008",
@@ -13888,10 +13744,10 @@
 "population": 372
 },
 {
-"code": "05001001",
-"nom": "ABRIES",
-"lat": 44.796667,
-"lon": 6.928333,
+"code": "05038001",
+"nom": "CHATEAU-VILLE-VIEILLE",
+"lat": 44.759333,
+"lon": 6.809,
 "ville": "Aiguilles",
 "population": 369
 },
@@ -13918,14 +13774,6 @@
 "lon": 8.989167,
 "ville": "Santa-Maria-Siché",
 "population": 364
-},
-{
-"code": "05093001",
-"nom": "NEVACHE-EDF-03",
-"lat": 45.0185,
-"lon": 6.622333,
-"ville": "Névache",
-"population": 362
 },
 {
 "code": "66157001",
@@ -13984,10 +13832,10 @@
 "population": 341
 },
 {
-"code": "05007001",
-"nom": "ARVIEUX LA CHALP",
-"lat": 44.781167,
-"lon": 6.736667,
+"code": "05007003",
+"nom": "ARVIEUX",
+"lat": 44.796,
+"lon": 6.728,
 "ville": "Arvieux",
 "population": 340
 },
@@ -14032,14 +13880,6 @@
 "population": 330
 },
 {
-"code": "38342001",
-"nom": "ROISSARD",
-"lat": 44.882167,
-"lon": 5.6395,
-"ville": "Roissard",
-"population": 324
-},
-{
 "code": "19034001",
 "nom": "CAMPS",
 "lat": 44.983667,
@@ -14064,14 +13904,6 @@
 "population": 315
 },
 {
-"code": "65059022",
-"nom": "LA MONGIE_SAPC",
-"lat": 42.908667,
-"lon": 0.170333,
-"ville": "Vielle-Aure",
-"population": 315
-},
-{
 "code": "07032002",
 "nom": "BERZEME RAD",
 "lat": 44.6285,
@@ -14080,10 +13912,10 @@
 "population": 308
 },
 {
-"code": "05157001",
-"nom": "ST VERAN",
-"lat": 44.6985,
-"lon": 6.870167,
+"code": "05077402",
+"nom": "COL AGNEL-NIVOSE",
+"lat": 44.688667,
+"lon": 6.976167,
 "ville": "Molines-en-Queyras",
 "population": 307
 },
@@ -14094,22 +13926,6 @@
 "lon": -1.135167,
 "ville": "Estérençuby",
 "population": 303
-},
-{
-"code": "05181002",
-"nom": "VILLAR D'ARENE",
-"lat": 45.030833,
-"lon": 6.361667,
-"ville": "Villar-d'Arêne",
-"population": 300
-},
-{
-"code": "05038001",
-"nom": "CHATEAU-VILLE-VIEILLE",
-"lat": 44.759333,
-"lon": 6.809,
-"ville": "Château-Ville-Vieille",
-"population": 298
 },
 {
 "code": "73261003",
@@ -14280,12 +14096,12 @@
 "population": 242
 },
 {
-"code": "65018001",
-"nom": "ARBEOST_SAPC",
-"lat": 42.9885,
-"lon": -0.2785,
-"ville": "Béost",
-"population": 231
+"code": "38522004",
+"nom": "VALJOUFFREY_SAPC",
+"lat": 44.869833,
+"lon": 6.090167,
+"ville": "Entraigues",
+"population": 225
 },
 {
 "code": "48130002",
@@ -14312,36 +14128,12 @@
 "population": 219
 },
 {
-"code": "38527001",
-"nom": "VAUJANY",
-"lat": 45.149167,
-"lon": 6.047167,
-"ville": "Oz",
-"population": 217
-},
-{
 "code": "20272004",
 "nom": "SARTENE",
 "lat": 41.652333,
 "lon": 8.979333,
 "ville": "Fozzano",
 "population": 210
-},
-{
-"code": "26059001",
-"nom": "BOUVANTE",
-"lat": 44.955,
-"lon": 5.326667,
-"ville": "Bouvante",
-"population": 210
-},
-{
-"code": "07025001",
-"nom": "BARNAS RAD",
-"lat": 44.666,
-"lon": 4.159833,
-"ville": "Barnas",
-"population": 209
 },
 {
 "code": "34277001",
@@ -14416,14 +14208,6 @@
 "population": 187
 },
 {
-"code": "38040001",
-"nom": "BESSE",
-"lat": 45.071167,
-"lon": 6.168,
-"ville": "Mizoën",
-"population": 187
-},
-{
 "code": "48027003",
 "nom": "LE BLEYMARD_SAPC",
 "lat": 44.4515,
@@ -14438,14 +14222,6 @@
 "lon": 5.0535,
 "ville": "Vals-des-Tilles",
 "population": 180
-},
-{
-"code": "38522004",
-"nom": "VALJOUFFREY_SAPC",
-"lat": 44.869833,
-"lon": 6.090167,
-"ville": "Valjouffrey",
-"population": 167
 },
 {
 "code": "63006002",
@@ -14480,14 +14256,6 @@
 "population": 154
 },
 {
-"code": "31404001",
-"nom": "OO",
-"lat": 42.794167,
-"lon": 0.504667,
-"ville": "Garin",
-"population": 146
-},
-{
 "code": "20341400",
 "nom": "MANICCIA-NIVOSE",
 "lat": 42.208333,
@@ -14496,28 +14264,12 @@
 "population": 145
 },
 {
-"code": "05032002",
-"nom": "CHAMPOLEON",
-"lat": 44.720167,
-"lon": 6.258833,
-"ville": "Champoléon",
-"population": 144
-},
-{
 "code": "20264002",
 "nom": "RUSIO_SAPC",
 "lat": 42.364167,
 "lon": 9.2645,
 "ville": "San-Lorenzo",
 "population": 138
-},
-{
-"code": "38299001",
-"nom": "PELLAFOL-CHANEAUX",
-"lat": 44.784167,
-"lon": 5.906167,
-"ville": "Pellafol",
-"population": 136
 },
 {
 "code": "05044400",
@@ -14560,38 +14312,6 @@
 "population": 116
 },
 {
-"code": "07144001",
-"nom": "LOUBARESSE",
-"lat": 44.599833,
-"lon": 4.049333,
-"ville": "Loubaresse",
-"population": 43
-},
-{
-"code": "05007003",
-"nom": "ARVIEUX",
-"lat": 44.796,
-"lon": 6.728
-},
-{
-"code": "05026400",
-"nom": "CEILLAC_NIVO",
-"lat": 44.671167,
-"lon": 6.776167
-},
-{
-"code": "05063402",
-"nom": "LA MEIJE-NIVOSE",
-"lat": 45.012333,
-"lon": 6.265167
-},
-{
-"code": "05077402",
-"nom": "COL AGNEL-NIVOSE",
-"lat": 44.688667,
-"lon": 6.976167
-},
-{
 "code": "05079402",
 "nom": "GALIBIER-NIVOSE",
 "lat": 45.056833,
@@ -14620,12 +14340,6 @@
 "nom": "BOCOGNANO",
 "lat": 42.104167,
 "lon": 9.103333
-},
-{
-"code": "38005402",
-"nom": "AIGLETON-NIVOSE",
-"lat": 45.231,
-"lon": 6.038167
 },
 {
 "code": "38375402",
@@ -14676,12 +14390,6 @@
 "lon": 6.907167
 },
 {
-"code": "73306401",
-"nom": "LES ROCHILLES-NIVOSE",
-"lat": 45.085,
-"lon": 6.469
-},
-{
 "code": "74014004",
 "nom": "FLAINE_SAPC",
 "lat": 46.002833,
@@ -14710,12 +14418,6 @@
 "nom": "AIGUILLES ROUGES-NIVOSE",
 "lat": 45.986333,
 "lon": 6.896833
-},
-{
-"code": "74236002",
-"nom": "MONT ARBOIS",
-"lat": 45.855333,
-"lon": 6.669
 },
 {
 "code": "75114007",
