@@ -7954,8 +7954,8 @@
 {
 "code": "45187001",
 "nom": "LORRIS",
-"lat": 47.881167,
-"lon": 2.505167,
+"lat": 47.883333,
+"lon": 2.507667,
 "ville": "Lorris",
 "population": 2996
 },
@@ -11616,10 +11616,10 @@
 "population": 1174
 },
 {
-"code": "42034001",
-"nom": "COL DE CERVIERES",
-"lat": 45.850667,
-"lon": 3.766167,
+"code": "42248002",
+"nom": "ST-JUST-EN-CHEV",
+"lat": 45.9085,
+"lon": 3.844167,
 "ville": "Saint-Just-en-Chevalet",
 "population": 1169
 },
@@ -11654,6 +11654,14 @@
 "lon": 4.480333,
 "ville": "Matour",
 "population": 1161
+},
+{
+"code": "42034001",
+"nom": "COL DE CERVIERES",
+"lat": 45.850667,
+"lon": 3.766167,
+"ville": "Chabreloche",
+"population": 1156
 },
 {
 "code": "89365001",
