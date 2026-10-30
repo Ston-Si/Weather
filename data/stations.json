@@ -7352,10 +7352,10 @@
 "population": 3498
 },
 {
-"code": "74191003",
-"nom": "LE PLENEY",
-"lat": 46.168333,
-"lon": 6.692833,
+"code": "74258002",
+"nom": "SAMOENS",
+"lat": 46.086667,
+"lon": 6.726667,
 "ville": "Taninges",
 "population": 3491
 },
@@ -9296,14 +9296,6 @@
 "population": 2204
 },
 {
-"code": "74258002",
-"nom": "SAMOENS",
-"lat": 46.086667,
-"lon": 6.726667,
-"ville": "Samoëns",
-"population": 2203
-},
-{
 "code": "72255001",
 "nom": "ROUESSE-VASSE",
 "lat": 48.139333,
@@ -10768,6 +10760,14 @@
 "population": 1498
 },
 {
+"code": "74286001",
+"nom": "VACHERESSE",
+"lat": 46.316333,
+"lon": 6.669833,
+"ville": "Saint-Jean-d'Aulps",
+"population": 1492
+},
+{
 "code": "43071001",
 "nom": "CHOMELIX",
 "lat": 45.2575,
@@ -10821,14 +10821,6 @@
 "lat": 43.849167,
 "lon": 6.508,
 "ville": "Castellane",
-"population": 1472
-},
-{
-"code": "74286001",
-"nom": "VACHERESSE",
-"lat": 46.316333,
-"lon": 6.669833,
-"ville": "Bernex",
 "population": 1472
 },
 {
