@@ -8192,10 +8192,10 @@
 "population": 2896
 },
 {
-"code": "74236002",
-"nom": "MONT ARBOIS",
+"code": "74173001",
+"nom": "MEGEVE",
 "lat": 45.855333,
-"lon": 6.669,
+"lon": 6.608167,
 "ville": "Megève",
 "population": 2893
 },
@@ -10070,6 +10070,14 @@
 "lon": -0.5435,
 "ville": "Arthez-de-Béarn",
 "population": 1837
+},
+{
+"code": "74136403",
+"nom": "GRAND-BORNAND",
+"lat": 45.958167,
+"lon": 6.456167,
+"ville": "Glières-Val-de-Borne",
+"population": 1824
 },
 {
 "code": "58264001",
@@ -12712,14 +12720,6 @@
 "population": 801
 },
 {
-"code": "73132003",
-"nom": "COL-DES-SAISIES",
-"lat": 45.755,
-"lon": 6.535333,
-"ville": "Flumet",
-"population": 799
-},
-{
 "code": "21561003",
 "nom": "ST-MARTIN-DU-M",
 "lat": 47.4005,
@@ -13014,6 +13014,14 @@
 "lon": 7.1335,
 "ville": "Clans",
 "population": 703
+},
+{
+"code": "73132003",
+"nom": "COL-DES-SAISIES",
+"lat": 45.755,
+"lon": 6.535333,
+"ville": "Villard-sur-Doron",
+"population": 702
 },
 {
 "code": "04184001",
@@ -13960,10 +13968,10 @@
 "population": 341
 },
 {
-"code": "05007003",
-"nom": "ARVIEUX",
-"lat": 44.796,
-"lon": 6.728,
+"code": "05007001",
+"nom": "ARVIEUX LA CHALP",
+"lat": 44.781167,
+"lon": 6.736667,
 "ville": "Arvieux",
 "population": 340
 },
@@ -14056,10 +14064,10 @@
 "population": 308
 },
 {
-"code": "05157001",
-"nom": "ST VERAN",
-"lat": 44.6985,
-"lon": 6.870167,
+"code": "05077402",
+"nom": "COL AGNEL-NIVOSE",
+"lat": 44.688667,
+"lon": 6.976167,
 "ville": "Molines-en-Queyras",
 "population": 307
 },
@@ -14544,16 +14552,16 @@
 "population": 43
 },
 {
+"code": "05007003",
+"nom": "ARVIEUX",
+"lat": 44.796,
+"lon": 6.728
+},
+{
 "code": "05063402",
 "nom": "LA MEIJE-NIVOSE",
 "lat": 45.012333,
 "lon": 6.265167
-},
-{
-"code": "05077402",
-"nom": "COL AGNEL-NIVOSE",
-"lat": 44.688667,
-"lon": 6.976167
 },
 {
 "code": "05079402",
@@ -14674,6 +14682,12 @@
 "nom": "AIGUILLES ROUGES-NIVOSE",
 "lat": 45.986333,
 "lon": 6.896833
+},
+{
+"code": "74236002",
+"nom": "MONT ARBOIS",
+"lat": 45.855333,
+"lon": 6.669
 },
 {
 "code": "75114007",
