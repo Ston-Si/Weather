@@ -9184,10 +9184,10 @@
 "population": 2292
 },
 {
-"code": "73055001",
-"nom": "BOZEL",
-"lat": 45.44,
-"lon": 6.6495,
+"code": "73227400",
+"nom": "Courchevel",
+"lat": 45.413333,
+"lon": 6.632167,
 "ville": "Courchevel",
 "population": 2290
 },
@@ -9574,6 +9574,14 @@
 "lon": 3.650667,
 "ville": "Florac Trois Rivières",
 "population": 2100
+},
+{
+"code": "73055001",
+"nom": "BOZEL",
+"lat": 45.44,
+"lon": 6.6495,
+"ville": "Bozel",
+"population": 2098
 },
 {
 "code": "61179001",
@@ -10072,10 +10080,10 @@
 "population": 1837
 },
 {
-"code": "74136403",
-"nom": "GRAND-BORNAND",
-"lat": 45.958167,
-"lon": 6.456167,
+"code": "74136003",
+"nom": "GRAND BORNAND",
+"lat": 45.970333,
+"lon": 6.444667,
 "ville": "Glières-Val-de-Borne",
 "population": 1824
 },
@@ -10462,6 +10470,14 @@
 "lon": 1.180667,
 "ville": "Saint-Jouvent",
 "population": 1625
+},
+{
+"code": "74136403",
+"nom": "GRAND-BORNAND",
+"lat": 45.958167,
+"lon": 6.456167,
+"ville": "La Clusaz",
+"population": 1623
 },
 {
 "code": "32245001",
@@ -13942,14 +13958,6 @@
 "lon": 6.216333,
 "ville": "Saint-Sorlin-d'Arves",
 "population": 347
-},
-{
-"code": "20314006",
-"nom": "SANTO PIETRO DI TENDA",
-"lat": 42.635833,
-"lon": 9.200667,
-"ville": "Santo-Pietro-di-Tenda",
-"population": 341
 },
 {
 "code": "30297001",
