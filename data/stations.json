@@ -13256,6 +13256,14 @@
 "population": 642
 },
 {
+"code": "20345001",
+"nom": "VERO",
+"lat": 42.070833,
+"lon": 8.926667,
+"ville": "Vero",
+"population": 640
+},
+{
 "code": "30009001",
 "nom": "ALZON",
 "lat": 43.979,
@@ -13280,10 +13288,10 @@
 "population": 632
 },
 {
-"code": "73071403",
-"nom": "BELLECOTE-NIVOSE",
-"lat": 45.489,
-"lon": 6.771167,
+"code": "73197002",
+"nom": "PEISEY_NANCROIX ROSUEL",
+"lat": 45.519,
+"lon": 6.806333,
 "ville": "Peisey-Nancroix",
 "population": 632
 },
@@ -13453,6 +13461,14 @@
 "lat": 45.9865,
 "lon": 2.393167,
 "ville": "Mainsat",
+"population": 540
+},
+{
+"code": "73071403",
+"nom": "BELLECOTE-NIVOSE",
+"lat": 45.489,
+"lon": 6.771167,
+"ville": "Champagny-en-Vanoise",
 "population": 540
 },
 {
@@ -13632,14 +13648,6 @@
 "population": 506
 },
 {
-"code": "20040001",
-"nom": "BOCOGNANO-GARE",
-"lat": 42.080167,
-"lon": 9.0525,
-"ville": "Ucciani",
-"population": 504
-},
-{
 "code": "48148004",
 "nom": "ST-ETIENNE-VALLEE-FRANCAISE",
 "lat": 44.165833,
@@ -13758,6 +13766,14 @@
 "lon": 3.3085,
 "ville": "Le Caylar",
 "population": 460
+},
+{
+"code": "20040001",
+"nom": "BOCOGNANO-GARE",
+"lat": 42.080167,
+"lon": 9.0525,
+"ville": "Tavera",
+"population": 453
 },
 {
 "code": "74290003",
