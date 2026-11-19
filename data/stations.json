@@ -13984,6 +13984,14 @@
 "population": 347
 },
 {
+"code": "20314006",
+"nom": "SANTO PIETRO DI TENDA",
+"lat": 42.635833,
+"lon": 9.200667,
+"ville": "Santo-Pietro-di-Tenda",
+"population": 341
+},
+{
 "code": "30297001",
 "nom": "ST SAUVEUR CAMPRIEU",
 "lat": 44.119333,
@@ -14686,10 +14694,22 @@
 "lon": 6.508333
 },
 {
+"code": "73257400",
+"nom": "Les Menuires",
+"lat": 45.323333,
+"lon": 6.541667
+},
+{
 "code": "73296005",
 "nom": "TIGNES_SAPC",
 "lat": 45.467,
 "lon": 6.907167
+},
+{
+"code": "73304404",
+"nom": "Val d Isere Joseray",
+"lat": 45.445,
+"lon": 6.978167
 },
 {
 "code": "73306401",
