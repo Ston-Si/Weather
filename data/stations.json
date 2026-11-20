@@ -4600,10 +4600,10 @@
 "population": 6659
 },
 {
-"code": "74045001",
-"nom": "LE BOUCHET_SAPC",
-"lat": 45.7995,
-"lon": 6.367667,
+"code": "74280001",
+"nom": "THONES",
+"lat": 45.877833,
+"lon": 6.323,
 "ville": "Thônes",
 "population": 6654
 },
@@ -11149,6 +11149,14 @@
 "lat": 45.201167,
 "lon": 4.554333,
 "ville": "Saint-Alban-d'Ay",
+"population": 1384
+},
+{
+"code": "74045001",
+"nom": "LE BOUCHET_SAPC",
+"lat": 45.7995,
+"lon": 6.367667,
+"ville": "Val de Chaise",
 "population": 1384
 },
 {
